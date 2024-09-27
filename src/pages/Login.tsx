@@ -4,15 +4,16 @@ import { auth } from "../services/firebase";
 import { useState } from "react";
 import LoginForm from "../components/form/LoginForm";
 import { LoaderCircleIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { Alert, Snackbar } from "@mui/material";
+
+
+import { SnackBar } from "../components/snackbar/SnackBar";
 
 export const Login = () => {
-  const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [welcomeMessage, setWelcomeMessage] = useState(false);
+
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [openSnackbarError, setOpenSnackbarError] = useState(false);
@@ -29,11 +30,6 @@ export const Login = () => {
         localStorage.setItem("userToken", userCredential.user.refreshToken);
 
         setLoading(false);
-        setWelcomeMessage(true);
-        setTimeout(() => {
-          setWelcomeMessage(false);
-          navigate("/dashboard");
-        }, 2000);
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -67,24 +63,13 @@ export const Login = () => {
         </>
       )}
       {loading && <LoaderCircleIcon className="animate-spin text-indigo-300" />}
-      {welcomeMessage && (
-        <h3 className="text-3xl text-white font-bold">Bienvenido !</h3>
-      )}
-      <Snackbar
-        color="white"
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        autoHideDuration={3000}
-        open={openSnackbarError}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="error"
-          sx={{ bgcolor: "white", color: "black" }}
-        >
-          {error}
-        </Alert>
-      </Snackbar>
+
+      <SnackBar
+        message={error}
+        handleCloseSnackbar={handleCloseSnackbar}
+        openSnackbar={openSnackbarError}
+        severity="error"
+      />
       <footer className="absolute bottom-0 righ-0 w-full h-20 bg-transparent flex flex-col justify-center items-end pr-10 text-white text-sm">
         <h3>FromDevz Admin Panel version 1.0 </h3>
         <h3>FromDevz all rights reserved</h3>
