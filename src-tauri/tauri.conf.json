@@ -7,8 +7,8 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "admin-panel-v1",
-    "version": "0.1.0"
+    "productName": "FromDevz Admin Panel V 1.0",
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
@@ -20,7 +20,7 @@
     },
     "windows": [
       {
-        "title": "admin-panel-v1",
+        "title": "FromDevz Admin Panel V 1.0",
         "width": 800,
         "height": 600
       }

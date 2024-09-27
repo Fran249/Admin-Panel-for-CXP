@@ -14,26 +14,32 @@ const NavBar = () => {
   };
 
   return (
-    <AppBar position="fixed" sx={{ backgroundColor: "#222" }} className="font-montserrat text-white font-semibold uppercase">
-      <Toolbar className="relative flex justify-center items-center gap-10 w-full">
-        {navArray.map((item, index) => (
-          <Link
-            key={index}
-            to={item} // Asegúrate de que los enlaces tengan la barra inicial
-            className={`${
-              location.pathname.includes(item) ? "text-indigo-600" : "text-white"
-            } hover:text-indigo-600 transition-all duration-300`}
-          >
-            {item}
-          </Link>
-        ))}
-        <Tooltip title="Cerrar Sesion" className="absolute right-2 top-5">
-          <button onClick={handleLogOut}>
-            <LogOut className="text-white" />
+    <>
+      <nav className="font-archivo  w-full h-20 flex justify-center items-center gap-10 bg-neutral-100 ">
+        <div className="relative flex justify-center items-center w-full">
+          <div className=" p-2 bg-neutral-200 rounded-xl gap-2 flex justify-center items-center ">
+            {navArray.map((item,index) => (
+              <Link
+              key={index}
+                to={`${item}`}
+                className={`border-[.5px] transition-colors duration-300 px-10 py-1 font-bold text-xl rounded-xl first-letter:uppercase ${
+                  location.pathname === `/dashboard/${item}`
+                    ? "bg-neutral-900 text-white"
+                    : "bg-transparent text-neutral-400"
+                }`}
+              >
+                {item}
+              </Link>
+            ))}
+          </div>
+          <button onClick={handleLogOut} className="transition-colors duration-300 flex justify-center items-center gap-2 absolute top-2 right-5 hover:bg-neutral-800 text-neutral-900 hover:text-neutral-50 rounded-xl px-5 py-2">
+            <LogOut />
+            Cerrar sesión
           </button>
-        </Tooltip>
-      </Toolbar>
-    </AppBar>
+        </div>
+      </nav>
+
+    </>
   );
 };
 

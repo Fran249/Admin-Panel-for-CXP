@@ -49,7 +49,7 @@ export const Login = () => {
     setOpenSnackbarError(false);
   };
   return (
-    <section className="relative flex flex-col gap-10 justify-center items-center w-full min-h-screen bg-gradient-to-b from-slate-800 to-indigo-800 font-montserrat">
+    <section className="relative flex flex-col gap-10 justify-center items-center w-full min-h-screen bg-neutral-900 font-archivo">
       {user === null && loading === false && (
         <>
           <h1 className="text-4xl text-white font-bold">ADMIN PANEL</h1>
@@ -62,7 +62,7 @@ export const Login = () => {
           />
         </>
       )}
-      {loading && <LoaderCircleIcon className="animate-spin text-indigo-300" />}
+      {loading && <LoaderCircleIcon className="animate-spin text-neutral-50" />}
 
       <SnackBar
         message={error}
@@ -71,8 +71,8 @@ export const Login = () => {
         severity="error"
       />
       <footer className="absolute bottom-0 righ-0 w-full h-20 bg-transparent flex flex-col justify-center items-end pr-10 text-white text-sm">
-        <h3>FromDevz Admin Panel version 1.0 </h3>
-        <h3>FromDevz all rights reserved</h3>
+        <h3><span className="font-rajdhani text-lg">FromDevz</span> Admin Panel version 1.0 </h3>
+        <h3><span className="font-rajdhani text-lg">FromDevz</span> all rights reserved</h3>
       </footer>
     </section>
   );
