@@ -1,14 +1,14 @@
 // src/pages/Publicaciones.jsx
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 import { FromDevzButton } from "../components/button/FromDevzButton";
-import { ChevronLeft, ChevronRight, Edit, Plus, Trash } from "lucide-react";
-import { motion } from "framer-motion";
+import {Plus, } from "lucide-react";
+
 import { Table } from "../components/table/Table";
-export const Proyectos = () => {
+export const Archivos = () => {
 
 
 
-  const publicaciones = [
+  const files = [
     { id: 1, nombre: "Publicación 1", fecha: "2024-09-25" },
     { id: 2, nombre: "Publicación 2", fecha: "2024-09-26" },
     { id: 3, nombre: "Publicación 3", fecha: "2024-09-27" },
@@ -32,18 +32,18 @@ export const Proyectos = () => {
  
 
   useEffect(() => {
-    console.log(" estas en la ruta de proyectos");
+    console.log(" estas en la ruta de archivos");
   }, []);
   return (
     <section className="bg-neutral-100 w-full h-[calc(100dvh-80px)] flex text-black">
       <div className="w-60 flex flex-col justify-start gap-5 py-10 items-center h-full  border-r-[.5px] border-neutral-400">
-        <FromDevzButton click={handleButtonClick} text="Nuevo proyecto">
+        <FromDevzButton click={handleButtonClick} text="Subir archivo">
           <Plus size={20} />
         </FromDevzButton>
       </div>
 
       <div className="w-[calc(100%-240px)] h-full p-5">
-       <Table items={publicaciones} handleButtonClick={handleButtonClick} imageFormatter={false} documentFormatter={true} fileFormatter={false}/>
+       <Table items={files} handleButtonClick={handleButtonClick} documentFormatter={false} imageFormatter={false} fileFormatter={true}/>
       </div>
     </section>
   );

@@ -28,13 +28,13 @@ export const Publicaciones = () => {
   return (
     <section className=" w-full h-[calc(100dvh-80px)] flex text-black bg-neutral-100">
       <div className="w-60 flex flex-col justify-start gap-5 py-10 items-center h-full  border-r-[.5px] border-neutral-400 bg-neutral-100">
-        <FromDevzButton click={handleButtonClick} text="agregar">
+        <FromDevzButton click={handleButtonClick} text="Nueva publicacion">
           <Plus size={20} />
         </FromDevzButton>
       </div>
 
       <div className="w-[calc(100%-240px)] h-full p-5">
-        <Table items={publicaciones} handleButtonClick={handleButtonClick}/>
+        <Table items={publicaciones} handleButtonClick={handleButtonClick} imageFormatter={false} documentFormatter={true} fileFormatter={false}/>
       </div>
     </section>
   );

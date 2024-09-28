@@ -7,6 +7,8 @@ import { Login } from "./pages/Login";
 import { Dashboard } from "./pages/Dashboard";
 import { UserProvider } from "./context/UserContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { Imagenes } from "./pages/Imagenes";
+import { Archivos } from "./pages/Archivos";
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
           >
             <Route path="publicaciones" element={<Publicaciones />} />
             <Route path="proyectos" element={<Proyectos />} />
+            <Route path="imagenes" element={<Imagenes />} />
+            <Route path="archivos" element={<Archivos />} />
           </Route>
         </Routes>
       </UserProvider>

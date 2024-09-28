@@ -1,12 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { AppBar, Toolbar, Tooltip } from "@mui/material";
+
 import { LogOut } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { auth } from "../../services/firebase";
-import { useEffect, useState } from "react";
+
 
 const NavBar = () => {
-  const navArray = ["publicaciones", "proyectos"];
+  const navArray = ["publicaciones", "proyectos", "imagenes", "archivos"];
   const location = useLocation(); // Hook para obtener la ruta actual
 
   const handleLogOut = () => {
