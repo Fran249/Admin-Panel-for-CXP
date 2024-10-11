@@ -9,6 +9,7 @@ import { UserProvider } from "./context/UserContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Imagenes } from "./pages/Imagenes";
 import { Archivos } from "./pages/Archivos";
+import { Consultores } from "./pages/Consultores";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="proyectos" element={<Proyectos />} />
             <Route path="imagenes" element={<Imagenes />} />
             <Route path="archivos" element={<Archivos />} />
+            <Route path="consultores" element={<Consultores />} />
           </Route>
         </Routes>
       </UserProvider>

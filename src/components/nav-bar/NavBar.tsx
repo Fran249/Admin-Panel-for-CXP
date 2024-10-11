@@ -1,13 +1,54 @@
 import { Link, useLocation } from "react-router-dom";
-
-import { LogOut } from "lucide-react";
+import {
+  FileText,
+  Briefcase,
+  Image,
+  File,
+  Users,
+  LogOut,
+  LogOutIcon,
+} from "lucide-react";
 import { signOut } from "firebase/auth";
 import { auth } from "../../services/firebase";
-
+import { Tooltip } from "@mui/material";
+import { motion } from "framer-motion";
 
 const NavBar = () => {
-  const navArray = ["publicaciones", "proyectos", "imagenes", "archivos"];
+  const navArray = [
+    {
+      route: "publicaciones",
+      name: "Publicaciones",
+      icon: <FileText />,
+    },
+    {
+      route: "proyectos",
+      name: "Proyectos",
+      icon: <Briefcase />,
+    },
+    {
+      route: "imagenes",
+      name: "Imagenes",
+      icon: <Image />,
+    },
+    {
+      route: "archivos",
+      name: "Archivos",
+      icon: <File />,
+    },
+    {
+      route: "consultores",
+      name: "Consultores",
+      icon: <Users />,
+    },
+  ];
+
   const location = useLocation(); // Hook para obtener la ruta actual
+
+  // Variantes de animación para las letras
+  const letterVariants = {
+    hidden: { opacity: 0, y: 20 }, // Comienza oculto y desplazado hacia abajo
+    visible: { opacity: 1, y: 0 }, // Se anima a su posición normal
+  };
 
   const handleLogOut = () => {
     signOut(auth);
@@ -15,30 +56,52 @@ const NavBar = () => {
 
   return (
     <>
-      <nav className="font-archivo  w-full h-20 flex justify-center items-center gap-10 bg-neutral-100 ">
-        <div className="relative flex justify-center items-center w-full">
-          <div className=" p-2 bg-neutral-200 rounded-xl gap-2 flex justify-center items-center ">
-            {navArray.map((item,index) => (
-              <Link
-              key={index}
-                to={`${item}`}
-                className={`border-[.5px] transition-colors duration-300 px-10 py-1 font-bold text-xl rounded-xl first-letter:uppercase ${
-                  location.pathname === `/dashboard/${item}`
-                    ? "bg-neutral-900 text-white"
-                    : "bg-transparent text-neutral-400"
-                }`}
-              >
-                {item}
-              </Link>
-            ))}
-          </div>
-          <button onClick={handleLogOut} className="transition-colors duration-300 flex justify-center items-center gap-2 absolute top-2 right-5 hover:bg-neutral-800 text-neutral-900 hover:text-neutral-50 rounded-xl px-5 py-2">
-            <LogOut />
-            Cerrar sesión
-          </button>
+      <nav className="w-full h-20 hover:h-40 hover:bg-neutral-900 hover:text-neutral-200 fixed z-30 duration-300 bg-neutral-100 flex">
+        <div className="w-1/4 flex justify-start pl-2 items-center gap-10 ">
+          <Tooltip title="Cerrar sesión">
+            <button onClick={handleLogOut}>
+              <LogOutIcon />
+            </button>
+          </Tooltip>
+        </div>
+        <div className="w-3/4 flex justify-center items-center gap-16">
+          {navArray.map((item, index) => (
+            <Tooltip title={item.name} key={index}>
+              <div className="flex items-center gap-2">
+                <Link
+                  to={item.route}
+                  className={`hover:bg-neutral-900 hover:text-white border-[.5px] transition-colors duration-300 p-2 font-bold text-xl rounded-full first-letter:uppercase ${
+                    location.pathname === `/dashboard/${item.route}`
+                      ? "bg-neutral-900 text-white"
+                      : "bg-transparent text-neutral-400"
+                  }`}
+                >
+                  {item.icon}
+                </Link>
+                {location.pathname === `/dashboard/${item.route}` && (
+                  <div className="flex items-center font-bold text-xl">
+                    {item.name.split("").map((letter, letterIndex) => (
+                      <motion.span
+                        key={letterIndex}
+                        initial="hidden"
+                        animate="visible"
+                        exit="hidden"
+                        variants={letterVariants}
+                        transition={{
+                          duration: 0.3,
+                          delay: letterIndex * 0.01, // Cada letra tiene un pequeño retraso
+                        }}
+                      >
+                        {letter}
+                      </motion.span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Tooltip>
+          ))}
         </div>
       </nav>
-
     </>
   );
 };

@@ -1,7 +1,7 @@
 import { Tooltip } from "@mui/material";
 
 type Props = {
-  text: string;
+  text?: string;
   click: () => void;
   children: any;
 };

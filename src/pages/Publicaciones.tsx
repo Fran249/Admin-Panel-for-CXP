@@ -26,7 +26,7 @@ export const Publicaciones = () => {
     console.log(" estas en la ruta de publicaciones");
   }, []);
   return (
-    <section className=" w-full h-[calc(100dvh-80px)] flex text-black bg-neutral-100">
+    <section className="w-full min-h-screen py-20 flex text-black bg-neutral-100">
       <div className="w-60 flex flex-col justify-start gap-5 py-10 items-center h-full  border-r-[.5px] border-neutral-400 bg-neutral-100">
         <FromDevzButton click={handleButtonClick} text="Nueva publicacion">
           <Plus size={20} />

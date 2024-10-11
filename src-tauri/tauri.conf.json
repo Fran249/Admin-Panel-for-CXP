@@ -21,8 +21,12 @@
     "windows": [
       {
         "title": "FromDevz Admin Panel V 1.0",
-        "width": 800,
-        "height": 600
+        "fullscreen": false,
+        "resizable": true,   
+        "width": 1280,
+        "height": 720,
+        "minWidth": 1280,    
+        "minHeight": 720     
       }
     ],
     "security": {
