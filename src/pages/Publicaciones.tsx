@@ -1,9 +1,10 @@
 // src/pages/Publicaciones.jsx
 import { useEffect } from "react";
 import { FromDevzButton } from "../components/button/FromDevzButton";
-import {  Plus, } from "lucide-react";
+import { Plus } from "lucide-react";
 
 import { Table } from "../components/table/Table";
+import { Link } from "react-router-dom";
 export const Publicaciones = () => {
   const publicaciones = [
     { id: 1, nombre: "Publicación 1", fecha: "2024-09-25" },
@@ -26,15 +27,21 @@ export const Publicaciones = () => {
     console.log(" estas en la ruta de publicaciones");
   }, []);
   return (
-    <section className="w-full min-h-screen py-20 flex text-black bg-neutral-100">
-      <div className="w-60 flex flex-col justify-start gap-5 py-10 items-center h-full  border-r-[.5px] border-neutral-400 bg-neutral-100">
+    <section className="w-full min-h-screen py-20 flex flex-col justify-center items-center text-black bg-neutral-100">
+      <Link to={'upload'}>
         <FromDevzButton click={handleButtonClick} text="Nueva publicacion">
           <Plus size={20} />
         </FromDevzButton>
-      </div>
+      </Link>
 
-      <div className="w-[calc(100%-240px)] h-full p-5">
-        <Table items={publicaciones} handleButtonClick={handleButtonClick} imageFormatter={false} documentFormatter={true} fileFormatter={false}/>
+      <div className="w-full h-full p-5">
+        <Table
+          items={publicaciones}
+          handleButtonClick={handleButtonClick}
+          imageFormatter={false}
+          documentFormatter={true}
+          fileFormatter={false}
+        />
       </div>
     </section>
   );

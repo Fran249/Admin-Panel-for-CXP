@@ -1,9 +1,10 @@
 // src/pages/Consultores.jsx
 import { useEffect } from "react";
 import { FromDevzButton } from "../components/button/FromDevzButton";
-import {  Plus, } from "lucide-react";
+import { Plus } from "lucide-react";
 
 import { Table } from "../components/table/Table";
+import { Link } from "react-router-dom";
 export const Consultores = () => {
   const consultores = [
     { id: 1, nombre: "Consultor 1", fecha: "2024-09-25" },
@@ -26,15 +27,21 @@ export const Consultores = () => {
     console.log(" estas en la ruta de Consultores");
   }, []);
   return (
-    <section className=" w-full h-[calc(100dvh-80px)] flex text-black bg-neutral-100">
-      <div className="w-60 flex flex-col justify-start gap-5 py-10 items-center h-full  border-r-[.5px] border-neutral-400 bg-neutral-100">
+    <section className=" w-full h-screen flex flex-col justify-center items-center py-20 text-black bg-neutral-100">
+      <Link to={'upload'}>
         <FromDevzButton click={handleButtonClick} text="Nuevo Consultor">
           <Plus size={20} />
         </FromDevzButton>
-      </div>
+      </Link>
 
       <div className="w-[calc(100%-240px)] h-full p-5">
-        <Table items={consultores} handleButtonClick={handleButtonClick} imageFormatter={false} documentFormatter={true} fileFormatter={false}/>
+        <Table
+          items={consultores}
+          handleButtonClick={handleButtonClick}
+          imageFormatter={false}
+          documentFormatter={true}
+          fileFormatter={false}
+        />
       </div>
     </section>
   );

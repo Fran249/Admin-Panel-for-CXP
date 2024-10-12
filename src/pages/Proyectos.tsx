@@ -4,10 +4,8 @@ import { FromDevzButton } from "../components/button/FromDevzButton";
 import { ChevronLeft, ChevronRight, Edit, Plus, Trash } from "lucide-react";
 import { motion } from "framer-motion";
 import { Table } from "../components/table/Table";
+import { Link } from "react-router-dom";
 export const Proyectos = () => {
-
-
-
   const publicaciones = [
     { id: 1, nombre: "Publicación 1", fecha: "2024-09-25" },
     { id: 2, nombre: "Publicación 2", fecha: "2024-09-26" },
@@ -21,29 +19,29 @@ export const Proyectos = () => {
     { id: 10, nombre: "Publicación 10", fecha: "2024-10-04" },
   ];
 
-
-
-
   const handleButtonClick = () => {
     console.log("click");
   };
-
-
- 
 
   useEffect(() => {
     console.log(" estas en la ruta de proyectos");
   }, []);
   return (
-    <section className="bg-neutral-100 w-full h-[calc(100dvh-80px)] flex text-black">
-      <div className="w-60 flex flex-col justify-start gap-5 py-10 items-center h-full  border-r-[.5px] border-neutral-400">
+    <section className="bg-neutral-100 w-full h-screen py-20 flex flex-col justify-center items-center text-black">
+      <Link to={'upload'}>
         <FromDevzButton click={handleButtonClick} text="Nuevo proyecto">
           <Plus size={20} />
         </FromDevzButton>
-      </div>
+      </Link>
 
       <div className="w-[calc(100%-240px)] h-full p-5">
-       <Table items={publicaciones} handleButtonClick={handleButtonClick} imageFormatter={false} documentFormatter={true} fileFormatter={false}/>
+        <Table
+          items={publicaciones}
+          handleButtonClick={handleButtonClick}
+          imageFormatter={false}
+          documentFormatter={true}
+          fileFormatter={false}
+        />
       </div>
     </section>
   );

@@ -1,13 +1,11 @@
 // src/pages/Publicaciones.jsx
-import { useEffect} from "react";
+import { useEffect } from "react";
 import { FromDevzButton } from "../components/button/FromDevzButton";
-import {Plus, } from "lucide-react";
-import image from '../assets/servicio-card.png'
+import { Plus } from "lucide-react";
+import image from "../assets/servicio-card.png";
 import { Table } from "../components/table/Table";
+import { Link } from "react-router-dom";
 export const Imagenes = () => {
-
-
-
   const images = [
     { id: 1, name: "Publicación 1", url: image },
     { id: 2, name: "Publicación 2", url: image },
@@ -21,29 +19,29 @@ export const Imagenes = () => {
     { id: 10, name: "Publicación 10", url: image },
   ];
 
-
-
-
   const handleButtonClick = () => {
     console.log("click");
   };
-
-
- 
 
   useEffect(() => {
     console.log(" estas en la ruta de Imagenes");
   }, []);
   return (
-    <section className="bg-neutral-100 w-full h-[calc(100dvh-80px)] flex text-black">
-      <div className="w-60 flex flex-col justify-start gap-5 py-10 items-center h-full  border-r-[.5px] border-neutral-400">
+    <section className="bg-neutral-100 w-full h-screen py-20 flex flex-col justify-center items-center text-black">
+      <Link to={'upload'}>
         <FromDevzButton click={handleButtonClick} text="Cargar imagen">
           <Plus size={20} />
         </FromDevzButton>
-      </div>
+      </Link>
 
       <div className="w-[calc(100%-240px)] h-full p-5">
-       <Table items={images} handleButtonClick={handleButtonClick} imageFormatter={true} documentFormatter={false} fileFormatter={false}/>
+        <Table
+          items={images}
+          handleButtonClick={handleButtonClick}
+          imageFormatter={true}
+          documentFormatter={false}
+          fileFormatter={false}
+        />
       </div>
     </section>
   );

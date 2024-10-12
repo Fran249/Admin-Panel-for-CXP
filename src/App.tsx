@@ -10,6 +10,8 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Imagenes } from "./pages/Imagenes";
 import { Archivos } from "./pages/Archivos";
 import { Consultores } from "./pages/Consultores";
+import { NewPublicacion } from "./pages/NewPublicacion";
+
 
 function App() {
   return (
@@ -26,10 +28,15 @@ function App() {
             }
           >
             <Route path="publicaciones" element={<Publicaciones />} />
+            <Route path="publicaciones/upload" element={<NewPublicacion />} />
             <Route path="proyectos" element={<Proyectos />} />
+            <Route path="proyectos/upload" element={<NewPublicacion />} />
             <Route path="imagenes" element={<Imagenes />} />
+            <Route path="imagenes/upload" element={<NewPublicacion />} />
             <Route path="archivos" element={<Archivos />} />
+            <Route path="archivos/upload" element={<NewPublicacion />} />
             <Route path="consultores" element={<Consultores />} />
+            <Route path="consultores/upload" element={<NewPublicacion />} />
           </Route>
         </Routes>
       </UserProvider>

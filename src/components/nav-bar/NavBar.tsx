@@ -56,13 +56,24 @@ const NavBar = () => {
 
   return (
     <>
-      <nav className="w-full h-20 hover:h-40 hover:bg-neutral-900 hover:text-neutral-200 fixed z-30 duration-300 bg-neutral-100 flex">
+      <nav className="w-full h-16 hover:h-40 hover:bg-neutral-900 hover:text-neutral-200 fixed z-30 duration-300 bg-neutral-100 flex">
         <div className="w-1/4 flex justify-start pl-2 items-center gap-10 ">
           <Tooltip title="Cerrar sesión">
             <button onClick={handleLogOut}>
               <LogOutIcon />
             </button>
           </Tooltip>
+          <div className="flex items-center font-bold text-xl">
+            <h3 className="font-bold first-letter:uppercase">
+              {location.pathname === "/dashboard/publicaciones/upload" ||
+              location.pathname === "/dashboard/proyectos/upload" ||
+              location.pathname === "/dashboard/consultores/upload" ||
+              location.pathname === "/dashboard/imagenes/upload" ||
+              location.pathname === "/dashboard/archivos/upload"
+                ? location.pathname.split("/").reverse().join(" ").replace('dashboard', '').replace('upload', 'cargar')
+                : location.pathname.replace("dashboard", "").split("/")}
+            </h3>
+          </div>
         </div>
         <div className="w-3/4 flex justify-center items-center gap-16">
           {navArray.map((item, index) => (
@@ -78,25 +89,6 @@ const NavBar = () => {
                 >
                   {item.icon}
                 </Link>
-                {location.pathname === `/dashboard/${item.route}` && (
-                  <div className="flex items-center font-bold text-xl">
-                    {item.name.split("").map((letter, letterIndex) => (
-                      <motion.span
-                        key={letterIndex}
-                        initial="hidden"
-                        animate="visible"
-                        exit="hidden"
-                        variants={letterVariants}
-                        transition={{
-                          duration: 0.3,
-                          delay: letterIndex * 0.01, // Cada letra tiene un pequeño retraso
-                        }}
-                      >
-                        {letter}
-                      </motion.span>
-                    ))}
-                  </div>
-                )}
               </div>
             </Tooltip>
           ))}
