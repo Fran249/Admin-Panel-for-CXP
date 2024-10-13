@@ -7,14 +7,20 @@ import {
   Users,
   LogOut,
   LogOutIcon,
+  ChevronRight,
+  FolderPlus,
+  ImagePlus,
+  FilePlus,
+  UserPlus,
 } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { auth } from "../../services/firebase";
 import { Tooltip } from "@mui/material";
+import { useState } from "react";
 import { motion } from "framer-motion";
 
 const NavBar = () => {
-  const navArray = [
+  const vistasArray = [
     {
       route: "publicaciones",
       name: "Publicaciones",
@@ -41,15 +47,60 @@ const NavBar = () => {
       icon: <Users />,
     },
   ];
+  const cargarArray = [
+    {
+      route: "publicaciones/upload",
+      name: "Cargar publicaciones",
+      icon: <FilePlus />, // Archivo con un "+" para indicar cargar publicaciones
+    },
+    {
+      route: "proyectos/upload",
+      name: "Cargar proyectos",
+      icon: <FolderPlus />, // Carpeta con un "+" para cargar proyectos
+    },
+    {
+      route: "imagenes/upload",
+      name: "Cargar imagenes",
+      icon: <ImagePlus />, // Imagen con un "+" para cargar imágenes
+    },
+    {
+      route: "archivos/upload",
+      name: "Cargar archivos",
+      icon: <FilePlus />, // Archivo con un "+" para cargar archivos
+    },
+    {
+      route: "consultores/upload",
+      name: "Cargar consultores",
+      icon: <UserPlus />, // Usuarios con un "+" para agregar consultores
+    },
+  ];
+  const [showVistas, setShowVistas] = useState(false);
+  const [showCargar, setShowCargar] = useState(false);
 
   const location = useLocation(); // Hook para obtener la ruta actual
 
   // Variantes de animación para las letras
-  const letterVariants = {
-    hidden: { opacity: 0, y: 20 }, // Comienza oculto y desplazado hacia abajo
-    visible: { opacity: 1, y: 0 }, // Se anima a su posición normal
-  };
 
+  const handleShowVistas = () => {
+    if (showCargar === true) {
+      setShowCargar(false);
+      setShowVistas(!showVistas);
+    }else{ 
+      setShowVistas(!showVistas)
+    }
+  };
+  const handleShowCargar = () => {
+    if (showVistas === true) {
+      setShowVistas(false);
+      setShowCargar(!showCargar);
+    }else {
+      setShowCargar(!showCargar)
+    }
+  };
+  const stackVariants = {
+    hidden: { opacity: 0, x: 20 }, // Comienza oculto y desplazado hacia abajo
+    visible: { opacity: 1, x: 0 }, // Se anima a su posición normal
+  };
   const handleLogOut = () => {
     signOut(auth);
   };
@@ -70,28 +121,87 @@ const NavBar = () => {
               location.pathname === "/dashboard/consultores/upload" ||
               location.pathname === "/dashboard/imagenes/upload" ||
               location.pathname === "/dashboard/archivos/upload"
-                ? location.pathname.split("/").reverse().join(" ").replace('dashboard', '').replace('upload', 'cargar')
+                ? location.pathname
+                    .split("/")
+                    .reverse()
+                    .join(" ")
+                    .replace("dashboard", "")
+                    .replace("upload", "cargar")
                 : location.pathname.replace("dashboard", "").split("/")}
             </h3>
           </div>
         </div>
-        <div className="w-3/4 flex justify-center items-center gap-16">
-          {navArray.map((item, index) => (
-            <Tooltip title={item.name} key={index}>
-              <div className="flex items-center gap-2">
-                <Link
-                  to={item.route}
-                  className={`hover:bg-neutral-900 hover:text-white border-[.5px] transition-colors duration-300 p-2 font-bold text-xl rounded-full first-letter:uppercase ${
-                    location.pathname === `/dashboard/${item.route}`
-                      ? "bg-neutral-900 text-white"
-                      : "bg-transparent text-neutral-400"
-                  }`}
-                >
-                  {item.icon}
-                </Link>
-              </div>
-            </Tooltip>
-          ))}
+
+        <div className="w-3/4 flex justify-start items-center gap-16">
+          <button
+            className="duration-300 flex items-center gap-2 rounded-lg border-[.5px] border-transparent hover:border-neutral-200 hover:border-[.5px] px-2 py-1"
+            onClick={handleShowVistas}
+          >
+            <h3 className="font-bold text-xl">Ver</h3>
+            <ChevronRight
+              className={`duration-300 ${showVistas ? "rotate-180" : ""}`}
+            />
+          </button>
+
+          {showVistas &&
+            vistasArray.map((item, index) => (
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                transition={{ duration: 0.5, delay: index / 10 }}
+                variants={stackVariants}
+              >
+                <Tooltip title={item.name} key={index}>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      to={item.route}
+                      className={`hover:bg-neutral-900 hover:text-white border-[.5px] transition-colors duration-300 p-2 font-bold text-xl rounded-full first-letter:uppercase ${
+                        location.pathname === `/dashboard/${item.route}`
+                          ? "bg-neutral-900 text-white"
+                          : "bg-transparent text-neutral-400"
+                      }`}
+                    >
+                      {item.icon}
+                    </Link>
+                  </div>
+                </Tooltip>
+              </motion.div>
+            ))}
+                      <button
+            className="duration-300 flex items-center gap-2 rounded-lg border-[.5px] border-transparent hover:border-neutral-200 hover:border-[.5px] px-2 py-1"
+            onClick={handleShowCargar}
+          >
+            <h3 className="font-bold text-xl">Cargar</h3>
+            <ChevronRight
+              className={`duration-300 ${showCargar ? "rotate-180" : ""}`}
+            />
+          </button>
+          {showCargar &&
+            cargarArray.map((item, index) => (
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                transition={{ duration: 0.5, delay: index / 10 }}
+                variants={stackVariants}
+              >
+                <Tooltip title={item.name} key={index}>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      to={item.route}
+                      className={`hover:bg-neutral-900 hover:text-white border-[.5px] transition-colors duration-300 p-2 font-bold text-xl rounded-full first-letter:uppercase ${
+                        location.pathname === `/dashboard/${item.route}`
+                          ? "bg-neutral-900 text-white"
+                          : "bg-transparent text-neutral-400"
+                      }`}
+                    >
+                      {item.icon}
+                    </Link>
+                  </div>
+                </Tooltip>
+              </motion.div>
+            ))}
         </div>
       </nav>
     </>
