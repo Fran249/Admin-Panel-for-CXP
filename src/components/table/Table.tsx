@@ -5,12 +5,13 @@ import {
 } from "../button/FromDevzButton";
 import { ChevronLeft, ChevronRight, Edit, Trash } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 type Props = {
   items: any[];
   handleButtonClick: () => void;
   imageFormatter: boolean;
   documentFormatter: boolean;
-  fileFormatter: boolean
+  fileFormatter: boolean;
 };
 
 export const Table = ({
@@ -18,22 +19,21 @@ export const Table = ({
   handleButtonClick,
   imageFormatter,
   documentFormatter,
-  fileFormatter
+  fileFormatter,
 }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [imageId, setImageId] = useState<null | number>(null);
 
   let itemsPerPage;
-  
 
   if (imageFormatter === true) {
     itemsPerPage = 10;
   } else if (documentFormatter === true) {
-    itemsPerPage = 5; 
-  } else if(fileFormatter === true) {
+    itemsPerPage = 5;
+  } else if (fileFormatter === true) {
     itemsPerPage = 10;
-  }else {
-    itemsPerPage = 1
+  } else {
+    itemsPerPage = 1;
   }
   const stackVariants = {
     hidden: { opacity: 0, x: 20 }, // Comienza oculto hacia abajo
@@ -87,15 +87,17 @@ export const Table = ({
               {currentItems.map((pub) => (
                 <tr key={pub.id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-800">
-                    {pub.nombre}
+                    {pub.titulo_publicacion}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-800">
-                    {pub.fecha}
+                    {pub.fecha_publicacion}
                   </td>
                   <td className="px-6 py-4  whitespace-nowrap text-sm text-neutral-800 flex gap-2">
-                    <FromDevzButton text="Editar" click={handleButtonClick}>
-                      <Edit size={20} />
-                    </FromDevzButton>
+                    <Link to={`edit/${pub.id}`}>
+                      <FromDevzButton text="Editar">
+                        <Edit size={20} />
+                      </FromDevzButton>
+                    </Link>
                     <FromDevzButton text="Eliminar" click={handleButtonClick}>
                       <Trash size={20} />
                     </FromDevzButton>
@@ -151,9 +153,9 @@ export const Table = ({
               variants={stackVariants}
             >
               <div className="w-full h-full relative rounded-xl bg-neutral-200 font-archivo text-neutral-100 ">
-                  <div className="bg-red-500 w-full h-20 rounded-t-xl absolute top-0 right-0 flex justify-center items-center">
-                    <h3>{item.nombre}.pdf</h3>
-                  </div>
+                <div className="bg-red-500 w-full h-20 rounded-t-xl absolute top-0 right-0 flex justify-center items-center">
+                  <h3>{item.nombre}.pdf</h3>
+                </div>
               </div>
 
               <div

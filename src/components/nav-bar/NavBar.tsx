@@ -5,21 +5,23 @@ import {
   Image,
   File,
   Users,
-  LogOut,
   LogOutIcon,
   ChevronRight,
   FolderPlus,
   ImagePlus,
   FilePlus,
   UserPlus,
+  ArrowLeft,
 } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { auth } from "../../services/firebase";
 import { Tooltip } from "@mui/material";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
+  const navigate = useNavigate();
   const vistasArray = [
     {
       route: "publicaciones",
@@ -76,7 +78,6 @@ const NavBar = () => {
   ];
   const [showVistas, setShowVistas] = useState(false);
   const [showCargar, setShowCargar] = useState(false);
-
   const location = useLocation(); // Hook para obtener la ruta actual
 
   // Variantes de animación para las letras
@@ -85,16 +86,16 @@ const NavBar = () => {
     if (showCargar === true) {
       setShowCargar(false);
       setShowVistas(!showVistas);
-    }else{ 
-      setShowVistas(!showVistas)
+    } else {
+      setShowVistas(!showVistas);
     }
   };
   const handleShowCargar = () => {
     if (showVistas === true) {
       setShowVistas(false);
       setShowCargar(!showCargar);
-    }else {
-      setShowCargar(!showCargar)
+    } else {
+      setShowCargar(!showCargar);
     }
   };
   const stackVariants = {
@@ -104,18 +105,25 @@ const NavBar = () => {
   const handleLogOut = () => {
     signOut(auth);
   };
-
+  const handleNavigate = () => {
+    navigate(-1);
+  };
   return (
     <>
       <nav className="w-full h-16 hover:h-40 hover:bg-neutral-900 hover:text-neutral-200 fixed z-30 duration-300 bg-neutral-100 flex">
         <div className="w-1/4 flex justify-start pl-2 items-center gap-10 ">
-          <Tooltip title="Cerrar sesión">
-            <button onClick={handleLogOut}>
-              <LogOutIcon />
-            </button>
-          </Tooltip>
+          {location.pathname !== "/dashboard/publicaciones" &&
+            location.pathname !== "/dashboard/proyectos" &&
+            location.pathname !== "/dashboard/consultores" && (
+              <button onClick={handleNavigate}>
+                <Tooltip title="Volver">
+                  <ArrowLeft />
+                </Tooltip>
+              </button>
+            )}
+
           <div className="flex items-center font-bold text-xl">
-            <h3 className="font-bold first-letter:uppercase">
+            <h3 className="font-bold first-letter:uppercase pl-2">
               {location.pathname === "/dashboard/publicaciones/upload" ||
               location.pathname === "/dashboard/proyectos/upload" ||
               location.pathname === "/dashboard/consultores/upload" ||
@@ -127,7 +135,12 @@ const NavBar = () => {
                     .join(" ")
                     .replace("dashboard", "")
                     .replace("upload", "cargar")
-                : location.pathname.replace("dashboard", "").split("/")}
+                : location.pathname.startsWith("/dashboard/publicaciones/edit/") // Cambiado para usar startsWith
+                ? "Editar publicación" // Aquí se maneja la ruta de edición
+                : location.pathname
+                    .replace("dashboard", "")
+                    .split("/")
+                    .join(" ")}
             </h3>
           </div>
         </div>
@@ -168,7 +181,7 @@ const NavBar = () => {
                 </Tooltip>
               </motion.div>
             ))}
-                      <button
+          <button
             className="duration-300 flex items-center gap-2 rounded-lg border-[.5px] border-transparent hover:border-neutral-200 hover:border-[.5px] px-2 py-1"
             onClick={handleShowCargar}
           >
@@ -203,6 +216,11 @@ const NavBar = () => {
               </motion.div>
             ))}
         </div>
+        <Tooltip title="Cerrar sesión">
+          <button onClick={handleLogOut} className="mr-10">
+            <LogOutIcon />
+          </button>
+        </Tooltip>
       </nav>
     </>
   );

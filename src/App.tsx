@@ -11,6 +11,7 @@ import { Imagenes } from "./pages/Imagenes";
 import { Archivos } from "./pages/Archivos";
 import { Consultores } from "./pages/Consultores";
 import { NewPublicacion } from "./pages/NewPublicacion";
+import { EditPublicacion } from "./pages/EditPublicacion";
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           >
             <Route path="publicaciones" element={<Publicaciones />} />
             <Route path="publicaciones/upload" element={<NewPublicacion />} />
+            <Route path="publicaciones/edit/:id" element={<EditPublicacion />} />
             <Route path="proyectos" element={<Proyectos />} />
             <Route path="proyectos/upload" element={<NewPublicacion />} />
             <Route path="imagenes" element={<Imagenes />} />
@@ -37,6 +39,7 @@ function App() {
             <Route path="archivos/upload" element={<NewPublicacion />} />
             <Route path="consultores" element={<Consultores />} />
             <Route path="consultores/upload" element={<NewPublicacion />} />
+            
           </Route>
         </Routes>
       </UserProvider>
