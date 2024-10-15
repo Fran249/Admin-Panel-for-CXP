@@ -6,9 +6,12 @@ import {
 import { ChevronLeft, ChevronRight, Edit, Trash } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+
+
+
 type Props = {
   items: any[];
-  handleButtonClick: () => void;
+  handleButtonClick: (pub:any) => void;
   imageFormatter: boolean;
   documentFormatter: boolean;
   fileFormatter: boolean;
@@ -98,7 +101,7 @@ export const Table = ({
                         <Edit size={20} />
                       </FromDevzButton>
                     </Link>
-                    <FromDevzButton text="Eliminar" click={handleButtonClick}>
+                    <FromDevzButton text="Eliminar" click={()=>handleButtonClick(pub)}>
                       <Trash size={20} />
                     </FromDevzButton>
                   </td>
@@ -130,7 +133,7 @@ export const Table = ({
               >
                 <FromDevzButtonWithTooltip
                   text="ELIMINAR"
-                  click={handleButtonClick}
+                  click={()=>handleButtonClick}
                 >
                   <Trash size={20} />
                 </FromDevzButtonWithTooltip>
@@ -165,7 +168,7 @@ export const Table = ({
               >
                 <FromDevzButtonWithTooltip
                   text="ELIMINAR"
-                  click={handleButtonClick}
+                  click={()=>handleButtonClick}
                 >
                   <Trash size={20} />
                 </FromDevzButtonWithTooltip>
