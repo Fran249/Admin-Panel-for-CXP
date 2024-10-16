@@ -344,9 +344,9 @@ export const EditPublicacion = () => {
                       ? findedDoc?.servicios_relacionados
                       : "No hay servicios seleccionados"}
                   </option>
-                  <option value="consultoria">Consultoría</option>
-                  <option value="desarrollo">Desarrollo</option>
-                  <option value="diseño">Diseño</option>
+                  <option value="Consultoria">Consultoría</option>
+                  <option value="Desarrollo">Desarrollo</option>
+                  <option value="Diseño">Diseño</option>
                 </select>
               </div>
             </div>
@@ -371,9 +371,9 @@ export const EditPublicacion = () => {
                       ? findedDoc?.industria_asociada
                       : "No hay industrias seleccionadas"}
                   </option>
-                  <option value="tecnologia">Tecnología</option>
-                  <option value="construccion">Construcción</option>
-                  <option value="salud">Salud</option>
+                  <option value="Tecnologia">Tecnología</option>
+                  <option value="Construccion">Construcción</option>
+                  <option value="Salud">Salud</option>
                 </select>
               </div>
             </div>
@@ -415,14 +415,14 @@ export const EditPublicacion = () => {
                         return "No hay archivo disponible"; // Mensaje si no hay archivo
                       })()}
                     </h3>
-                    <File className="text-white" />
+                    <File className="text-white"  />
                   </div>
                 </div>
               </div>
 
               <div className="mt-1 flex items-center">
                 <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-neutral-200">
-                  <File className="h-full w-full text-neutral-500" />
+                  <File className="h-full w-full text-neutral-500 p-2" />
                 </span>
                 <input
                   type="file"
@@ -451,7 +451,7 @@ export const EditPublicacion = () => {
               )}
               <div className="mt-1 flex items-center">
                 <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-neutral-200">
-                  <Image className="h-full w-full text-neutral-500" />
+                  <Image className="h-full w-full text-neutral-500 p-2" />
                 </span>
                 <input
                   type="file"

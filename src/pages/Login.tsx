@@ -7,7 +7,7 @@ import { LoaderCircleIcon } from "lucide-react";
 
 
 import { SnackBar } from "../components/snackbar/SnackBar";
-
+import { FromDevzIcon } from "../components/icons-svg/FromDevzIcon";
 export const Login = () => {
 
   const [username, setUsername] = useState("");
@@ -71,8 +71,8 @@ export const Login = () => {
         severity="error"
       />
       <footer className="absolute bottom-0 righ-0 w-full h-20 bg-transparent flex flex-col justify-center items-end pr-10 text-white text-sm">
-        <h3><span className="font-rajdhani text-lg">FromDevz</span> Admin Panel version 1.0 </h3>
-        <h3><span className="font-rajdhani text-lg">FromDevz</span> all rights reserved</h3>
+        <FromDevzIcon width="200"/>
+        <h3 className="uppercase">all rights reserved</h3>
       </footer>
     </section>
   );
