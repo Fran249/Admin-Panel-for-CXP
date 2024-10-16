@@ -5,6 +5,7 @@ type Props = {
   click?: () => void;
   children: any;
   submitType?: boolean;
+  
 };
 
 export const FromDevzButton = ({

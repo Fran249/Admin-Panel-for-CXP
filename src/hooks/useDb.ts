@@ -3,21 +3,20 @@ import { db } from "../services/firebase";
 import { collection, query, getDocs } from "firebase/firestore";
 
 interface Publication {
+  titulo_publicacion: string;
   id: string;
   abstract: string;
   archivo: string;
   autor_publicacion: string;
-  coautores: [string];
+  coautores: string[];
   fecha_publicacion: string;
   imagen: string;
-  industria_asociada: string;
-  keywords: [string];
+  industria_asociada: string[];
+  keywords: string[];
   lugar_publicacion: string;
   more_authors: boolean;
-  servicios_relacionados: string;
-  tipo_de_recurso: string;
-  titulo_publicacion: string;
-  ubicacion: string;
+  servicios_relacionados: string[];
+ 
 }
 
 interface UseDbProps {

@@ -12,11 +12,15 @@ import {
   FilePlus,
   UserPlus,
   ArrowLeft,
+  Settings,
+  Fullscreen,
+  X,
 } from "lucide-react";
+import { appWindow } from "@tauri-apps/api/window";
 import { signOut } from "firebase/auth";
 import { auth } from "../../services/firebase";
-import { Tooltip } from "@mui/material";
-import { useState } from "react";
+import { Drawer, Tooltip } from "@mui/material";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
@@ -78,8 +82,9 @@ const NavBar = () => {
   ];
   const [showVistas, setShowVistas] = useState(false);
   const [showCargar, setShowCargar] = useState(false);
+  const [openConfig, setOpenConfig] = useState(false);
   const location = useLocation(); // Hook para obtener la ruta actual
-
+  const [isFullscreen, setIsFullscreen] = useState(false);
   // Variantes de animación para las letras
 
   const handleShowVistas = () => {
@@ -98,6 +103,18 @@ const NavBar = () => {
       setShowCargar(!showCargar);
     }
   };
+  const toggleFullscreen = async () => {
+    try {
+      if (isFullscreen) {
+        await appWindow.setFullscreen(false);
+      } else {
+        await appWindow.setFullscreen(true);
+      }
+      setIsFullscreen(!isFullscreen); // Cambia el estado
+    } catch (error) {
+      console.error("Error al alternar pantalla completa:", error);
+    }
+  };
   const stackVariants = {
     hidden: { opacity: 0, x: 20 }, // Comienza oculto y desplazado hacia abajo
     visible: { opacity: 1, x: 0 }, // Se anima a su posición normal
@@ -108,9 +125,25 @@ const NavBar = () => {
   const handleNavigate = () => {
     navigate(-1);
   };
+
+  useEffect(() => {
+    const checkFullscreen = async () => {
+      const fullscreen = await appWindow.isFullscreen();
+      setIsFullscreen(fullscreen);
+    };
+
+    checkFullscreen();
+  }, []);
   return (
     <>
       <nav className="w-full h-16 hover:h-40 hover:bg-neutral-900 hover:text-neutral-200 fixed z-30 duration-300 bg-neutral-100 flex">
+        <div className="flex justify-center items-center p-2 m-2">
+          <Tooltip title="Configuracion">
+            <button onClick={() => setOpenConfig(true)}>
+              <Settings />
+            </button>
+          </Tooltip>
+        </div>
         <div className="w-1/4 flex justify-start pl-2 items-center gap-10 ">
           {location.pathname !== "/dashboard/publicaciones" &&
             location.pathname !== "/dashboard/proyectos" &&
@@ -159,6 +192,7 @@ const NavBar = () => {
           {showVistas &&
             vistasArray.map((item, index) => (
               <motion.div
+                key={index}
                 initial="hidden"
                 animate="visible"
                 exit="hidden"
@@ -193,6 +227,7 @@ const NavBar = () => {
           {showCargar &&
             cargarArray.map((item, index) => (
               <motion.div
+                key={index}
                 initial="hidden"
                 animate="visible"
                 exit="hidden"
@@ -216,12 +251,38 @@ const NavBar = () => {
               </motion.div>
             ))}
         </div>
-        <Tooltip title="Cerrar sesión">
-          <button onClick={handleLogOut} className="mr-10">
-            <LogOutIcon />
-          </button>
-        </Tooltip>
+        <div className="flex justify-center items-center">
+          <Tooltip title="Cerrar sesión" className="mr-10">
+            <button onClick={handleLogOut}>
+              <LogOutIcon />
+            </button>
+          </Tooltip>
+        </div>
       </nav>
+      <Drawer
+        anchor="bottom"
+        open={openConfig}
+        onClose={() => setOpenConfig(false)}
+      >
+        <div className="relative w-full flex justify-start items-center bg-neutral-800 text-neutral-200 h-80">
+          <div className="">
+            <button
+              onClick={toggleFullscreen}
+              className="flex justify-center items-center gap-2 border-[.5px] border-neutral-100 rounded-lg p-2 hover:text-neutral-800 hover:border-neutral-800 hover:bg-neutral-200 duration-300 transition-colors"
+            >
+              <Fullscreen />{" "}
+              <h3 className="font-semibold font-archivo">
+                {isFullscreen ? "Minimizar" : "Fullscreen"}
+              </h3>
+            </button>
+          </div>
+          <Tooltip title="Cerrar" className="absolute top-10 right-10 text-neutral-100">
+            <button onClick={()=> setOpenConfig(false)}>
+              <X />
+            </button>
+          </Tooltip>
+        </div>
+      </Drawer>
     </>
   );
 };

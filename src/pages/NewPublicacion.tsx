@@ -18,24 +18,41 @@ import { db, storage } from "../services/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { Toaster, toast } from "sonner";
 
+// Definimos un tipo para nuestro estado formData
+type FormData = {
+  abstract: string;
+  archivo: File | null;
+  autor_publicacion: string;
+  coautores: string[];
+  fecha_publicacion: string;
+  imagen: File | null;
+  industria_asociada: string[];
+  keywords: string[];
+  lugar_publicacion: string;
+  more_authors: boolean;
+  servicios_relacionados: string[];
+  titulo_publicacion: string;
+};
+
 export const NewPublicacion = () => {
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     abstract: "",
-    archivo: null as File | null,
+    archivo: null,
     autor_publicacion: "",
     coautores: Array(5).fill(""),
     fecha_publicacion: "",
-    imagen: null as File | null,
-    industria_asociada: "",
+    imagen: null,
+    industria_asociada: [],
     keywords: Array(5).fill(""),
     lugar_publicacion: "",
     more_authors: false,
-    servicios_relacionados: "",
-    tipo_de_recurso: "",
+    servicios_relacionados: [],
     titulo_publicacion: "",
-    ubicacion: "",
   });
+
+  const [isServiciosOpen, setIsServiciosOpen] = useState(false);
+  const [isIndustriaOpen, setIsIndustriaOpen] = useState(false);
 
   const inputClasses =
     "w-full p-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 bg-neutral-200 text-neutral-800";
@@ -48,9 +65,14 @@ export const NewPublicacion = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleCheckboxChange = (name: keyof Pick<FormData, 'servicios_relacionados' | 'industria_asociada'>) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: checked
+        ? [...prev[name], value]
+        : prev[name].filter((item: string) => item !== value),
+    }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +81,7 @@ export const NewPublicacion = () => {
       setFormData((prev) => ({ ...prev, [name]: files[0] }));
     }
   };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(formData);
@@ -96,19 +119,31 @@ export const NewPublicacion = () => {
       };
 
       // Agregar el documento a Firestore con las URLs
-      await addDoc(projectsCollection, updatedFormData); // Cambiado data a project
+      await addDoc(projectsCollection, updatedFormData);
       setLoading(false);
       setTimeout(() => {
         window.location.href = "/dashboard/publicaciones";
       }, 3000);
       toast.success(
-        "Documento creado con exito! Dirigiendo a la vista de Publicaciones..."
+        "Documento creado con éxito! Dirigiendo a la vista de Publicaciones..."
       );
     } catch (error) {
       console.error("Error al cargar datos:", error);
       setLoading(false);
     }
   };
+
+  const servicios = [
+    { value: "consultoria", label: "Consultoría" },
+    { value: "desarrollo", label: "Desarrollo" },
+    { value: "diseño", label: "Diseño" },
+  ];
+
+  const industrias = [
+    { value: "tecnologia", label: "Tecnología" },
+    { value: "construccion", label: "Construcción" },
+    { value: "salud", label: "Salud" },
+  ];
 
   return (
     <section className="w-full min-h-screen py-20 bg-neutral-100 flex flex-col justify-center items-center">
@@ -250,7 +285,7 @@ export const NewPublicacion = () => {
                   Imagen
                 </label>
                 <div className="mt-1 flex items-center">
-                  <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-neutral-200">
+                  <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-neutral-200 p-2">
                     <Image className="h-full w-full text-neutral-500" />
                   </span>
                   <input
@@ -269,7 +304,7 @@ export const NewPublicacion = () => {
                   Archivo
                 </label>
                 <div className="mt-1 flex items-center">
-                  <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-neutral-200">
+                  <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-neutral-200 p-2">
                     <File className="h-full w-full text-neutral-500" />
                   </span>
                   <input
@@ -294,18 +329,36 @@ export const NewPublicacion = () => {
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Briefcase className="h-5 w-5 text-neutral-500" />
                   </div>
-                  <select
-                    name="servicios_relacionados"
-                    id="servicios_relacionados"
-                    className={`${inputClasses} pl-10`}
-                    value={formData.servicios_relacionados}
-                    onChange={handleSelectChange}
+                  <div
+                    className={`${inputClasses} pl-10 cursor-pointer`}
+                    onClick={() => setIsServiciosOpen(!isServiciosOpen)}
                   >
-                    <option value="">Seleccione un servicio</option>
-                    <option value="consultoria">Consultoría</option>
-                    <option value="desarrollo">Desarrollo</option>
-                    <option value="diseño">Diseño</option>
-                  </select>
+                    {formData.servicios_relacionados.length > 0
+                      ? formData.servicios_relacionados.map(service => 
+                          servicios.find(s => s.value === service)?.label
+                        ).join(', ')
+                      : 'Seleccione un servicio'}
+                  </div>
+                  {isServiciosOpen && (
+                    <div className="absolute z-10 mt-1 w-full bg-neutral-200 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                      {servicios.map((servicio) => (
+                        <div key={servicio.value} className="flex items-center px-4 py-2 hover:bg-gray-100">
+                          <input
+                            type="checkbox"
+                            id={servicio.value}
+                            name="servicios_relacionados"
+                            value={servicio.value}
+                            checked={formData.servicios_relacionados.includes(servicio.value)}
+                            onChange={handleCheckboxChange('servicios_relacionados')}
+                            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                          />
+                          <label htmlFor={servicio.value} className="ml-3 block text-sm text-gray-700">
+                            {servicio.label}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -317,18 +370,36 @@ export const NewPublicacion = () => {
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Tag className="h-5 w-5 text-neutral-500" />
                   </div>
-                  <select
-                    name="industria_asociada"
-                    id="industria_asociada"
-                    className={`${inputClasses} pl-10`}
-                    value={formData.industria_asociada}
-                    onChange={handleSelectChange}
+                  <div
+                    className={`${inputClasses} pl-10 cursor-pointer`}
+                    onClick={() => setIsIndustriaOpen(!isIndustriaOpen)}
                   >
-                    <option value="">Seleccione una industria</option>
-                    <option value="tecnologia">Tecnología</option>
-                    <option value="construccion">Construcción</option>
-                    <option value="salud">Salud</option>
-                  </select>
+                    {formData.industria_asociada.length > 0
+                      ? formData.industria_asociada.map(industry => 
+                          industrias.find(i => i.value === industry)?.label
+                        ).join(', ')
+                      : 'Seleccione una industria'}
+                  </div>
+                  {isIndustriaOpen && (
+                    <div className="absolute z-10 mt-1 w-full bg-neutral-200 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                      {industrias.map((industria) => (
+                        <div key={industria.value} className="flex items-center px-4 py-2 hover:bg-gray-100">
+                          <input
+                            type="checkbox"
+                            id={industria.value}
+                            name="industria_asociada"
+                            value={industria.value}
+                            checked={formData.industria_asociada.includes(industria.value)}
+                            onChange={handleCheckboxChange('industria_asociada')}
+                            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                          />
+                          <label htmlFor={industria.value} className="ml-3 block text-sm text-gray-700">
+                            {industria.label}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
