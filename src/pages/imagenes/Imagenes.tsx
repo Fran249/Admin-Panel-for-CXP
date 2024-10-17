@@ -1,9 +1,9 @@
 // src/pages/Publicaciones.jsx
 import { useEffect } from "react";
-import { FromDevzButton } from "../components/button/FromDevzButton";
+import { FromDevzButton } from "../../components/button/FromDevzButton";
 import { Plus } from "lucide-react";
-import image from "../assets/servicio-card.png";
-import { Table } from "../components/table/Table";
+import image from "../../assets/servicio-card.png";
+import { Table } from "../../components/table/Table";
 import { Link } from "react-router-dom";
 export const Imagenes = () => {
   const images = [
@@ -28,7 +28,7 @@ export const Imagenes = () => {
   }, []);
   return (
     <section className="bg-neutral-100 w-full h-screen py-20 flex flex-col justify-center items-center text-black">
-      <Link to={'upload'}>
+      <Link to={"upload"}>
         <FromDevzButton click={handleButtonClick} text="Cargar imagen">
           <Plus size={20} />
         </FromDevzButton>
@@ -36,6 +36,7 @@ export const Imagenes = () => {
 
       <div className="w-[calc(100%-240px)] h-full p-5">
         <Table
+          tableTitle="Imagenes"
           items={images}
           handleButtonClick={handleButtonClick}
           imageFormatter={true}

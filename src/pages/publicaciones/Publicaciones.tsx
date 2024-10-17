@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import { FromDevzButton } from "../components/button/FromDevzButton";
+import { FromDevzButton } from "../../components/button/FromDevzButton";
 import { LoaderCircle, Plus } from "lucide-react";
-import { Table } from "../components/table/Table";
+import { Table } from "../../components/table/Table";
 import { Link } from "react-router-dom";
-import { useDb } from "../hooks/useDb";
+import { useDb } from "../../hooks/useDb";
 import { Toaster, toast } from "sonner";
 import { deleteDoc, doc } from "firebase/firestore";
-import { db } from "../services/firebase";
+import { db } from "../../services/firebase";
 
 export const Publicaciones = () => {
   const { publicaciones, loading, setLoading, refreshPublications } = useDb({ dbRoute: "publications" });
@@ -46,6 +46,7 @@ export const Publicaciones = () => {
 
           <div className="w-full h-full p-5">
             <Table
+            tableTitle="Publicación"
               items={publicaciones}
               handleButtonClick={handleButtonClick}
               imageFormatter={false}

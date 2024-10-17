@@ -19,6 +19,23 @@ interface Publication {
  
 }
 
+type Coordenadas = {
+  latitude: number,
+  longitude: number,
+}
+interface Projects {
+  imagenes: string[] | [];
+  id: string;
+  nombre_proyecto: string;
+  texto_1: string;
+  texto_2: string;
+  tipo_de_recurso: string;
+  industria_asociada: string[];
+  ubicacion_localidad: string;
+  ubicacion_pais: boolean;
+  coordenadas: Coordenadas;
+}
+
 interface UseDbProps {
   dbRoute: string;
   id?: string;
@@ -26,6 +43,7 @@ interface UseDbProps {
 
 export const useDb = ({ dbRoute, id }: UseDbProps) => {
   const [publicaciones, setPublicaciones] = useState<Publication[]>([]);
+  const [projects, setProjects] = useState<Projects[]>([])
   const [loading, setLoading] = useState(false);
   const [findedDoc, setFindedDoc] = useState<Publication | null>(null);
 
@@ -34,18 +52,34 @@ export const useDb = ({ dbRoute, id }: UseDbProps) => {
     const q = query(collection(db, dbRoute));
     const querySnapshot = await getDocs(q);
 
-    const docs: Publication[] = [];
+    if(dbRoute === 'publications') {
+      const docs: Publication[] = [];
 
-    querySnapshot.forEach((doc) => {
-      docs.push({
-        ...doc.data(),
-        id: doc.id,
-      } as Publication);
-    });
+      querySnapshot.forEach((doc) => {
+        docs.push({
+          ...doc.data(),
+          id: doc.id,
+        } as Publication);
+      });
+      console.log(docs)
+      setPublicaciones(docs);
+      if (id) {
+        getDocumentById();
+      }
+    }if (dbRoute === 'projects') {
+      const docs: Projects[] = [];
 
-    setPublicaciones(docs);
-    if (id) {
-      getDocumentById();
+      querySnapshot.forEach((doc) => {
+        docs.push({
+          ...doc.data(),
+          id: doc.id,
+        } as Projects);
+      });
+  
+      setProjects(docs);
+      if (id) {
+        getDocumentById();
+      }
     }
     setLoading(false);
   };
@@ -73,6 +107,7 @@ export const useDb = ({ dbRoute, id }: UseDbProps) => {
     publicaciones,
     loading,
     findedDoc,
+    projects,
     setLoading,
     refreshPublications,  // Agregamos la función aquí
   };

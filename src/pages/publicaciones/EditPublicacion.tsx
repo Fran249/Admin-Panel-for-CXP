@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { useDb } from "../hooks/useDb";
+import { useDb } from "../../hooks/useDb";
 import {
   Briefcase,
   Calendar,
@@ -13,12 +13,12 @@ import {
   User,
 } from "lucide-react";
 import { Toaster, toast } from "sonner";
-import { FromDevzButton } from "../components/button/FromDevzButton";
+import { FromDevzButton } from "../../components/button/FromDevzButton";
 import React, { useEffect, useState } from "react";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, updateDoc } from "firebase/firestore";
-import { db, storage } from "../services/firebase";
-import { truncateText } from "../utils/truncateText";
+import { db, storage } from "../../services/firebase";
+import { truncateText } from "../../utils/truncateText";
 
 type FormData = {
   titulo_publicacion: string;

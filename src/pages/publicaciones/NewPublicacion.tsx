@@ -1,4 +1,4 @@
-import { FromDevzButton } from "../components/button/FromDevzButton";
+import { FromDevzButton } from "../../components/button/FromDevzButton";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -14,9 +14,10 @@ import {
   LoaderCircle,
 } from "lucide-react";
 import { addDoc, collection } from "firebase/firestore";
-import { db, storage } from "../services/firebase";
+import { db, storage } from "../../services/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { Toaster, toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 // Definimos un tipo para nuestro estado formData
 type FormData = {
@@ -35,6 +36,7 @@ type FormData = {
 };
 
 export const NewPublicacion = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     abstract: "",
@@ -65,15 +67,22 @@ export const NewPublicacion = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCheckboxChange = (name: keyof Pick<FormData, 'servicios_relacionados' | 'industria_asociada'>) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: checked
-        ? [...prev[name], value]
-        : prev[name].filter((item: string) => item !== value),
-    }));
-  };
+  const handleCheckboxChange =
+    (
+      name: keyof Pick<
+        FormData,
+        "servicios_relacionados" | "industria_asociada"
+      >
+    ) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { value, checked } = e.target;
+      setFormData((prev) => ({
+        ...prev,
+        [name]: checked
+          ? [...prev[name], value]
+          : prev[name].filter((item: string) => item !== value),
+      }));
+    };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
@@ -87,7 +96,7 @@ export const NewPublicacion = () => {
     console.log(formData);
     setLoading(true);
     try {
-      const projectsCollection = collection(db, "publications");
+      const publicationsCollection = collection(db, "publications");
 
       // Cargar la imagen en Firebase Storage
       let imageUrl = null;
@@ -119,10 +128,10 @@ export const NewPublicacion = () => {
       };
 
       // Agregar el documento a Firestore con las URLs
-      await addDoc(projectsCollection, updatedFormData);
+      await addDoc(publicationsCollection, updatedFormData);
       setLoading(false);
       setTimeout(() => {
-        window.location.href = "/dashboard/publicaciones";
+        navigate('/dashboard/publicaciones'); // Navega hacia la ruta deseada
       }, 3000);
       toast.success(
         "Documento creado con éxito! Dirigiendo a la vista de Publicaciones..."
@@ -157,6 +166,7 @@ export const NewPublicacion = () => {
         >
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-6">
+              {/* Título de la publicación */}
               <div className="col-span-2">
                 <label htmlFor="titulo_publicacion" className={labelClasses}>
                   Título de la publicación
@@ -176,7 +186,7 @@ export const NewPublicacion = () => {
                   />
                 </div>
               </div>
-
+              {/*Autor de la publicación*/}
               <div>
                 <label htmlFor="autor_publicacion" className={labelClasses}>
                   Autor de la publicación
@@ -196,7 +206,7 @@ export const NewPublicacion = () => {
                   />
                 </div>
               </div>
-
+              {/* Coautores*/}
               {[1, 2, 3, 4, 5].map((num) => (
                 <div key={num}>
                   <label htmlFor={`coautor_${num}`} className={labelClasses}>
@@ -225,7 +235,7 @@ export const NewPublicacion = () => {
                   </div>
                 </div>
               ))}
-
+              {/*Abstract*/}
               <div className="col-span-2">
                 <label htmlFor="abstract" className={labelClasses}>
                   Abstract
@@ -240,7 +250,7 @@ export const NewPublicacion = () => {
                   onChange={handleInputChange}
                 ></textarea>
               </div>
-
+              {/*Lugar de la publicacion */}
               <div>
                 <label htmlFor="lugar_publicacion" className={labelClasses}>
                   Lugar de publicación
@@ -260,7 +270,7 @@ export const NewPublicacion = () => {
                   />
                 </div>
               </div>
-
+              {/*Fecha de publicacion */}
               <div>
                 <label htmlFor="fecha_publicacion" className={labelClasses}>
                   Fecha de publicación
@@ -279,7 +289,7 @@ export const NewPublicacion = () => {
                   />
                 </div>
               </div>
-
+              {/*Imagen*/}
               <div>
                 <label htmlFor="imagen" className={labelClasses}>
                   Imagen
@@ -298,7 +308,7 @@ export const NewPublicacion = () => {
                   />
                 </div>
               </div>
-
+              {/*Archivo*/}
               <div>
                 <label htmlFor="archivo" className={labelClasses}>
                   Archivo
@@ -317,7 +327,7 @@ export const NewPublicacion = () => {
                   />
                 </div>
               </div>
-
+              {/*Servicios Relacionados*/}
               <div>
                 <label
                   htmlFor="servicios_relacionados"
@@ -334,25 +344,38 @@ export const NewPublicacion = () => {
                     onClick={() => setIsServiciosOpen(!isServiciosOpen)}
                   >
                     {formData.servicios_relacionados.length > 0
-                      ? formData.servicios_relacionados.map(service => 
-                          servicios.find(s => s.value === service)?.label
-                        ).join(', ')
-                      : 'Seleccione un servicio'}
+                      ? formData.servicios_relacionados
+                          .map(
+                            (service) =>
+                              servicios.find((s) => s.value === service)?.label
+                          )
+                          .join(", ")
+                      : "Seleccione un servicio"}
                   </div>
                   {isServiciosOpen && (
                     <div className="absolute z-10 mt-1 w-full bg-neutral-200 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
                       {servicios.map((servicio) => (
-                        <div key={servicio.value} className="flex items-center px-4 py-2 hover:bg-gray-100">
+                        <div
+                          key={servicio.value}
+                          className="flex items-center px-4 py-2 hover:bg-gray-100"
+                        >
                           <input
                             type="checkbox"
                             id={servicio.value}
                             name="servicios_relacionados"
                             value={servicio.value}
-                            checked={formData.servicios_relacionados.includes(servicio.value)}
-                            onChange={handleCheckboxChange('servicios_relacionados')}
+                            checked={formData.servicios_relacionados.includes(
+                              servicio.value
+                            )}
+                            onChange={handleCheckboxChange(
+                              "servicios_relacionados"
+                            )}
                             className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                           />
-                          <label htmlFor={servicio.value} className="ml-3 block text-sm text-gray-700">
+                          <label
+                            htmlFor={servicio.value}
+                            className="ml-3 block text-sm text-gray-700"
+                          >
                             {servicio.label}
                           </label>
                         </div>
@@ -361,7 +384,7 @@ export const NewPublicacion = () => {
                   )}
                 </div>
               </div>
-
+              {/*Industria Asociada*/}
               <div>
                 <label htmlFor="industria_asociada" className={labelClasses}>
                   Industria asociada
@@ -375,25 +398,39 @@ export const NewPublicacion = () => {
                     onClick={() => setIsIndustriaOpen(!isIndustriaOpen)}
                   >
                     {formData.industria_asociada.length > 0
-                      ? formData.industria_asociada.map(industry => 
-                          industrias.find(i => i.value === industry)?.label
-                        ).join(', ')
-                      : 'Seleccione una industria'}
+                      ? formData.industria_asociada
+                          .map(
+                            (industry) =>
+                              industrias.find((i) => i.value === industry)
+                                ?.label
+                          )
+                          .join(", ")
+                      : "Seleccione una industria"}
                   </div>
                   {isIndustriaOpen && (
                     <div className="absolute z-10 mt-1 w-full bg-neutral-200 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
                       {industrias.map((industria) => (
-                        <div key={industria.value} className="flex items-center px-4 py-2 hover:bg-gray-100">
+                        <div
+                          key={industria.value}
+                          className="flex items-center px-4 py-2 hover:bg-gray-100"
+                        >
                           <input
                             type="checkbox"
                             id={industria.value}
                             name="industria_asociada"
                             value={industria.value}
-                            checked={formData.industria_asociada.includes(industria.value)}
-                            onChange={handleCheckboxChange('industria_asociada')}
+                            checked={formData.industria_asociada.includes(
+                              industria.value
+                            )}
+                            onChange={handleCheckboxChange(
+                              "industria_asociada"
+                            )}
                             className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                           />
-                          <label htmlFor={industria.value} className="ml-3 block text-sm text-gray-700">
+                          <label
+                            htmlFor={industria.value}
+                            className="ml-3 block text-sm text-gray-700"
+                          >
                             {industria.label}
                           </label>
                         </div>
@@ -402,7 +439,7 @@ export const NewPublicacion = () => {
                   )}
                 </div>
               </div>
-
+              {/*Keywords*/}
               <div className="col-span-2">
                 <label htmlFor="keywords" className={labelClasses}>
                   Keywords

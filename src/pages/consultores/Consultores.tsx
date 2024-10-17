@@ -1,9 +1,9 @@
 // src/pages/Consultores.jsx
 import { useEffect } from "react";
-import { FromDevzButton } from "../components/button/FromDevzButton";
+import { FromDevzButton } from "../../components/button/FromDevzButton";
 import { Plus } from "lucide-react";
 
-import { Table } from "../components/table/Table";
+import { Table } from "../../components/table/Table";
 import { Link } from "react-router-dom";
 export const Consultores = () => {
   const consultores = [
@@ -36,6 +36,7 @@ export const Consultores = () => {
 
       <div className="w-[calc(100%-240px)] h-full p-5">
         <Table
+        tableTitle="Consultor"
           items={consultores}
           handleButtonClick={handleButtonClick}
           imageFormatter={false}

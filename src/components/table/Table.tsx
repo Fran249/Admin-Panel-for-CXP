@@ -15,6 +15,7 @@ type Props = {
   imageFormatter: boolean;
   documentFormatter: boolean;
   fileFormatter: boolean;
+  tableTitle?: string;
 };
 
 export const Table = ({
@@ -23,6 +24,7 @@ export const Table = ({
   imageFormatter,
   documentFormatter,
   fileFormatter,
+  tableTitle,
 }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [imageId, setImageId] = useState<null | number>(null);
@@ -76,7 +78,7 @@ export const Table = ({
             <thead className="bg-neutral-100">
               <tr>
                 <th className="px-6 py-3 text-left text-sm font-semibold text-neutral-800 tracking-wider">
-                  Publicación
+                  {tableTitle}
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-semibold text-neutral-800 tracking-wider">
                   Fecha

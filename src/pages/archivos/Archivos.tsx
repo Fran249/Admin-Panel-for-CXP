@@ -1,9 +1,9 @@
 // src/pages/Publicaciones.jsx
 import { useEffect } from "react";
-import { FromDevzButton } from "../components/button/FromDevzButton";
+import { FromDevzButton } from "../../components/button/FromDevzButton";
 import { Plus } from "lucide-react";
 
-import { Table } from "../components/table/Table";
+import { Table } from "../../components/table/Table";
 import { Link } from "react-router-dom";
 export const Archivos = () => {
   const files = [
@@ -28,7 +28,7 @@ export const Archivos = () => {
   }, []);
   return (
     <section className="bg-neutral-100 w-full h-screen flex flex-col justify-center items-center py-20 text-black">
-      <Link to={'upload'}>
+      <Link to={"upload"}>
         <FromDevzButton click={handleButtonClick} text="Subir archivo">
           <Plus size={20} />
         </FromDevzButton>
@@ -36,6 +36,7 @@ export const Archivos = () => {
 
       <div className="w-[calc(100%-240px)] h-full p-5">
         <Table
+          tableTitle="Archivo"
           items={files}
           handleButtonClick={handleButtonClick}
           documentFormatter={false}

@@ -1,13 +1,13 @@
 // src/pages/Home.jsx
 import { signInWithEmailAndPassword, User } from "firebase/auth";
-import { auth } from "../services/firebase";
+import { auth } from "../../services/firebase";
 import { useState } from "react";
-import LoginForm from "../components/form/LoginForm";
+import LoginForm from "../../components/form/LoginForm";
 import { LoaderCircleIcon } from "lucide-react";
 
 
-import { SnackBar } from "../components/snackbar/SnackBar";
-import { FromDevzIcon } from "../components/icons-svg/FromDevzIcon";
+import { SnackBar } from "../../components/snackbar/SnackBar";
+import { FromDevzIcon } from "../../components/icons-svg/FromDevzIcon";
 export const Login = () => {
 
   const [username, setUsername] = useState("");
