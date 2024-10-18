@@ -92,7 +92,7 @@ export const Table = ({
               {currentItems.map((pub) => (
                 <tr key={pub.id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-800">
-                    {pub.titulo_publicacion}
+                    {pub.titulo_publicacion || pub.nombre_proyecto}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-800">
                     {pub.fecha_publicacion}

@@ -1,27 +1,33 @@
 // src/pages/Publicaciones.jsx
-import { useEffect} from "react";
+import { useEffect } from "react";
 import { FromDevzButton } from "../../components/button/FromDevzButton";
-import {  Plus } from "lucide-react";
+import { LoaderCircle, Plus } from "lucide-react";
 
 import { Table } from "../../components/table/Table";
 import { Link } from "react-router-dom";
-import { useDb } from "@/src/hooks/useDb";
-export const Proyectos = () => {
-  const publicaciones = [
-    { id: 1, nombre: "Publicación 1", fecha: "2024-09-25" },
-    { id: 2, nombre: "Publicación 2", fecha: "2024-09-26" },
-    { id: 3, nombre: "Publicación 3", fecha: "2024-09-27" },
-    { id: 4, nombre: "Publicación 4", fecha: "2024-09-28" },
-    { id: 5, nombre: "Publicación 5", fecha: "2024-09-29" },
-    { id: 6, nombre: "Publicación 6", fecha: "2024-09-30" },
-    { id: 7, nombre: "Publicación 7", fecha: "2024-10-01" },
-    { id: 8, nombre: "Publicación 8", fecha: "2024-10-02" },
-    { id: 9, nombre: "Publicación 9", fecha: "2024-10-03" },
-    { id: 10, nombre: "Publicación 10", fecha: "2024-10-04" },
-  ];
+import { useDb } from "../../hooks/useDb";
+import { deleteDoc, doc } from "firebase/firestore";
+import { toast, Toaster } from "sonner";
+import { db } from "../../services/firebase";
 
-  const handleButtonClick = () => {
-    console.log("click");
+
+export const Proyectos = () => {
+  const { projects, loading , setLoading, refreshPublications} = useDb({ dbRoute: "projects" });
+  const handleButtonClick = async (pub: any) => {
+    console.log("Documento a eliminar:", pub);
+    setLoading(true);
+
+    const docRef = doc(db, "publications", pub.id);
+    try {
+      await deleteDoc(docRef);
+      toast.success("Documento borrado con éxito!");
+      await refreshPublications(); // Actualiza las publicaciones
+    } catch (error) {
+      console.error("Error al eliminar el documento:", error);
+      toast.error("Error al borrar el documento.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -29,22 +35,29 @@ export const Proyectos = () => {
   }, []);
   return (
     <section className="bg-neutral-100 w-full h-screen py-20 flex flex-col justify-center items-center text-black">
-      <Link to={"upload"}>
-        <FromDevzButton click={handleButtonClick} text="Nuevo proyecto">
-          <Plus size={20} />
-        </FromDevzButton>
-      </Link>
+      {loading ? (
+        <LoaderCircle className="text-neutral-800 animate-spin" />
+      ) : (
+        <>
+          <Link to={"upload"}>
+            <FromDevzButton  text="Nuevo proyecto">
+              <Plus size={20} />
+            </FromDevzButton>
+          </Link>
 
-      <div className="w-[calc(100%-240px)] h-full p-5">
-        <Table
-          tableTitle="Proyecto"
-          items={publicaciones}
-          handleButtonClick={handleButtonClick}
-          imageFormatter={false}
-          documentFormatter={true}
-          fileFormatter={false}
-        />
-      </div>
+          <div className="w-[calc(100%-240px)] h-full p-5">
+            <Table
+              tableTitle="Proyecto"
+              items={projects}
+              handleButtonClick={handleButtonClick}
+              imageFormatter={false}
+              documentFormatter={true}
+              fileFormatter={false}
+            />
+          </div>
+        </>
+      )}
+      <Toaster />
     </section>
   );
 };

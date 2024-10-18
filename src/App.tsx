@@ -13,6 +13,8 @@ import { Consultores } from "./pages/consultores/Consultores";
 import { NewPublicacion } from "./pages/publicaciones/NewPublicacion";
 import { EditPublicacion } from "./pages/publicaciones/EditPublicacion";
 import { NewProyecto } from "./pages/proyectos/NewProyecto";
+import { EditProyecto } from "./pages/proyectos/EditProyecto";
+import { NewImagen } from "./pages/imagenes/NewImagen";
 
 
 function App() {
@@ -34,8 +36,9 @@ function App() {
             <Route path="publicaciones/edit/:id" element={<EditPublicacion />} />
             <Route path="proyectos" element={<Proyectos />} />
             <Route path="proyectos/upload" element={<NewProyecto />} />
+            <Route path="proyectos/edit/:id" element={<EditProyecto />} />
             <Route path="imagenes" element={<Imagenes />} />
-            <Route path="imagenes/upload" element={<NewPublicacion />} />
+            <Route path="imagenes/upload" element={<NewImagen />} />
             <Route path="archivos" element={<Archivos />} />
             <Route path="archivos/upload" element={<NewPublicacion />} />
             <Route path="consultores" element={<Consultores />} />

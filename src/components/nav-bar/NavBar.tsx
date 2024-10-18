@@ -170,6 +170,8 @@ const NavBar = () => {
                     .replace("upload", "cargar")
                 : location.pathname.startsWith("/dashboard/publicaciones/edit/") // Cambiado para usar startsWith
                 ? "Editar publicación" // Aquí se maneja la ruta de edición
+                : location.pathname.startsWith("/dashboard/proyectos/edit/") 
+                ? "Editar proyecto"
                 : location.pathname
                     .replace("dashboard", "")
                     .split("/")

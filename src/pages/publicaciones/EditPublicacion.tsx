@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDb } from "../../hooks/useDb";
 import {
   Briefcase,
@@ -36,9 +36,10 @@ type FormData = {
 };
 
 export const EditPublicacion = () => {
+  const navigate = useNavigate();
   const pathname = useLocation().pathname;
   const id = pathname.split("/")[4];
-  const { findedDoc, loading, setLoading } = useDb({
+  const { findedDocPublications, loading, setLoading } = useDb({
     dbRoute: "publications",
     id: id,
   });
@@ -82,23 +83,23 @@ export const EditPublicacion = () => {
 
 
   useEffect(() => {
-    if (findedDoc) {
+    if (findedDocPublications) {
       setFormData({
-        titulo_publicacion: findedDoc.titulo_publicacion,
-        abstract: findedDoc.abstract,
+        titulo_publicacion: findedDocPublications.titulo_publicacion,
+        abstract: findedDocPublications.abstract,
         archivo: null,
-        autor_publicacion: findedDoc.autor_publicacion,
-        coautores: findedDoc.coautores,
-        fecha_publicacion: findedDoc.fecha_publicacion,
+        autor_publicacion: findedDocPublications.autor_publicacion,
+        coautores: findedDocPublications.coautores,
+        fecha_publicacion: findedDocPublications.fecha_publicacion,
         imagen: null,
-        industria_asociada: findedDoc.industria_asociada,
-        keywords: findedDoc.keywords,
-        lugar_publicacion: findedDoc.lugar_publicacion,
-        more_authors: findedDoc.more_authors,
-        servicios_relacionados: findedDoc.servicios_relacionados,
+        industria_asociada: findedDocPublications.industria_asociada,
+        keywords: findedDocPublications.keywords,
+        lugar_publicacion: findedDocPublications.lugar_publicacion,
+        more_authors: findedDocPublications.more_authors,
+        servicios_relacionados: findedDocPublications.servicios_relacionados,
       });
     }
-  }, [findedDoc]);
+  }, [findedDocPublications]);
 
   /*HANDLE IMAGEN*/
   const handleImagen = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,40 +113,23 @@ export const EditPublicacion = () => {
       setArchivo(Array.from(e.target.files));
     }
   };
-  // /*HANDLE KEYWORDS*/
-  // const handleKeywordChange = (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  //   index: number
-  // ) => {
-  //   const newKeywords = [...keywords];
-  //   newKeywords[index] = e.target.value;
-  //   setKeywords(newKeywords);
-  // };
-  // /*HANDLE COAUTORES*/
-  // const handleCoautoresChange = (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  //   index: number
-  // ) => {
-  //   const newCoautores = [...coautores];
-  //   newCoautores[index] = e.target.value;
-  //   setCoautores(newCoautores);
-  // };
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    index?: number // Agrega 'index' opcional para manejar arrays
+    index?: number 
   ) => {
     const { name, value } = e.target;
   
     if (index !== undefined && name.startsWith("keywords_")) {
-      // Si es un cambio en 'keywords', manejamos el array
+ 
       setFormData((prev) => {
-        const updatedKeywords = [...prev.keywords]; // Clona el array actual de keywords
-        updatedKeywords[index] = value; // Actualiza el valor en el índice correspondiente
+        const updatedKeywords = [...prev.keywords]; 
+        updatedKeywords[index] = value; 
   
-        return { ...prev, keywords: updatedKeywords }; // Devuelve el estado actualizado
+        return { ...prev, keywords: updatedKeywords };
       });
     } else {
-      // Manejo normal para otros inputs
+
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
@@ -171,23 +155,21 @@ export const EditPublicacion = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    // Subir la imagen si hay una seleccionada
-    let imageUrl = findedDoc?.imagen; // Valor por defecto
+
+    let imageUrl = findedDocPublications?.imagen; 
     if (image.length > 0) {
       const imageRef = ref(storage, `publications/images/${image[0].name}`);
-      await uploadBytes(imageRef, image[0]); // Sube la imagen
-      imageUrl = await getDownloadURL(imageRef); // Obtiene la URL
+      await uploadBytes(imageRef, image[0]); 
+      imageUrl = await getDownloadURL(imageRef); 
     }
 
-    // Subir el archivo si hay uno seleccionado
-    let archivoUrl = findedDoc?.archivo; // Valor por defecto
+    let archivoUrl = findedDocPublications?.archivo; 
     if (archivo.length > 0) {
       const archivoRef = ref(storage, `publications/files/${archivo[0].name}`);
-      await uploadBytes(archivoRef, archivo[0]); // Sube el archivo
-      archivoUrl = await getDownloadURL(archivoRef); // Obtiene la URL
+      await uploadBytes(archivoRef, archivo[0]); 
+      archivoUrl = await getDownloadURL(archivoRef); 
     }
 
-    // Actualiza los datos de la publicación
     const newPublicacion = {
       autor_publicacion: formData.autor_publicacion,
       abstract: formData.abstract,
@@ -208,7 +190,7 @@ export const EditPublicacion = () => {
 
     console.log("Publicación actualizada:", newPublicacion);
     setTimeout(() => {
-      window.location.href = "/dashboard/publicaciones";
+      navigate("/dashboard/publicaciones")
     }, 3000);
     toast.success(
       "Documento actualizado con exito! Dirigiendo a la vista de Publicaciones..."
@@ -476,10 +458,10 @@ export const EditPublicacion = () => {
                   <div className="p-2 rounded-t-lg w-full h-10 absolute top-0 right-0 bg-red-800 flex justify-center items-center">
                     <h3 className="text-sm text-white">
                       {(() => {
-                        if (findedDoc?.archivo) {
+                        if (findedDocPublications?.archivo) {
                           // Obtener la parte antes de '?'
                           const fileUrlWithoutParams =
-                            findedDoc.archivo.split("?")[0]; // Divide la URL por '?' para eliminar los parámetros
+                            findedDocPublications.archivo.split("?")[0]; // Divide la URL por '?' para eliminar los parámetros
 
                           // Obtener la parte después de 'o/' en la URL
                           const filePath = fileUrlWithoutParams.split("o/")[1]; // Divide la URL por 'o/' y toma la segunda parte
@@ -527,12 +509,12 @@ export const EditPublicacion = () => {
               <label htmlFor="imagen" className={labelClasses}>
                 Imagen
               </label>
-              {findedDoc?.imagen && (
+              {findedDocPublications?.imagen && (
                 <div className="my-4">
                   <h3 className="font-bold">Imagen previa</h3>
                   <img
                     className="w-40 h-32 rounded-lg shadow-sm shadow-neutral-800"
-                    src={findedDoc?.imagen}
+                    src={findedDocPublications?.imagen}
                     alt=""
                   />
                 </div>

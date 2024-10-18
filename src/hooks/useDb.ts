@@ -16,13 +16,8 @@ interface Publication {
   lugar_publicacion: string;
   more_authors: boolean;
   servicios_relacionados: string[];
- 
 }
 
-type Coordenadas = {
-  latitude: number,
-  longitude: number,
-}
 interface Projects {
   imagenes: string[] | [];
   id: string;
@@ -32,8 +27,9 @@ interface Projects {
   tipo_de_recurso: string;
   industria_asociada: string[];
   ubicacion_localidad: string;
-  ubicacion_pais: boolean;
-  coordenadas: Coordenadas;
+  ubicacion_pais: string;
+  latitude: string;
+  longitude: string;
 }
 
 interface UseDbProps {
@@ -43,16 +39,21 @@ interface UseDbProps {
 
 export const useDb = ({ dbRoute, id }: UseDbProps) => {
   const [publicaciones, setPublicaciones] = useState<Publication[]>([]);
-  const [projects, setProjects] = useState<Projects[]>([])
+  const [projects, setProjects] = useState<Projects[]>([]);
   const [loading, setLoading] = useState(false);
-  const [findedDoc, setFindedDoc] = useState<Publication | null>(null);
+  const [findedDocPublications, setFindedDocPublications] = useState<Publication | null>(
+    null
+  );
+  const [findedDocProjects, setFindedDocProjects] = useState<Projects | null>(
+    null
+  );
 
   const fetchDb = async () => {
     setLoading(true);
     const q = query(collection(db, dbRoute));
     const querySnapshot = await getDocs(q);
 
-    if(dbRoute === 'publications') {
+    if (dbRoute === "publications") {
       const docs: Publication[] = [];
 
       querySnapshot.forEach((doc) => {
@@ -61,12 +62,13 @@ export const useDb = ({ dbRoute, id }: UseDbProps) => {
           id: doc.id,
         } as Publication);
       });
-      console.log(docs)
+      console.log(docs);
       setPublicaciones(docs);
       if (id) {
         getDocumentById();
       }
-    }if (dbRoute === 'projects') {
+    }
+    if (dbRoute === "projects") {
       const docs: Projects[] = [];
 
       querySnapshot.forEach((doc) => {
@@ -75,7 +77,7 @@ export const useDb = ({ dbRoute, id }: UseDbProps) => {
           id: doc.id,
         } as Projects);
       });
-  
+
       setProjects(docs);
       if (id) {
         getDocumentById();
@@ -89,15 +91,23 @@ export const useDb = ({ dbRoute, id }: UseDbProps) => {
   };
 
   const getDocumentById = () => {
-    const finded = publicaciones.find((doc) => doc.id === id);
-    setFindedDoc(finded || null);
+    if (dbRoute === "publications") {
+      const finded = publicaciones.find((doc) => doc.id === id);
+      setFindedDocPublications(finded || null);
+    }
+    if (dbRoute === "projects") {
+      const finded = projects.find((doc) => doc.id === id);
+      setFindedDocProjects(finded || null);
+    }
   };
 
   useEffect(() => {
     if (publicaciones.length > 0 && id) {
       getDocumentById();
+    } if (projects.length > 0 && id) {
+      getDocumentById();
     }
-  }, [publicaciones, id]);
+  }, [publicaciones,projects, id]);
 
   useEffect(() => {
     fetchDb();
@@ -106,9 +116,10 @@ export const useDb = ({ dbRoute, id }: UseDbProps) => {
   return {
     publicaciones,
     loading,
-    findedDoc,
+    findedDocPublications,
+    findedDocProjects,
     projects,
     setLoading,
-    refreshPublications,  // Agregamos la función aquí
+    refreshPublications, // Agregamos la función aquí
   };
 };
