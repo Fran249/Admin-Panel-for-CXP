@@ -476,9 +476,7 @@ export const EditPublicacion = () => {
                             const fileName = decodedFileName.substring(
                               decodedFileName.lastIndexOf("/") + 1
                             );
-                            const filenameTruncated = truncateText({
-                              text: fileName,
-                            });
+                            const filenameTruncated = truncateText(fileName);
                             return filenameTruncated;
                           }
                         }

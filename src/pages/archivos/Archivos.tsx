@@ -1,49 +1,66 @@
 // src/pages/Publicaciones.jsx
 import { useEffect } from "react";
 import { FromDevzButton } from "../../components/button/FromDevzButton";
-import { Plus } from "lucide-react";
+import { LoaderCircle, Plus } from "lucide-react";
 
 import { Table } from "../../components/table/Table";
 import { Link } from "react-router-dom";
+import { useStorage } from "../../hooks/useStorage";
+import { deleteObject, ref } from "firebase/storage";
+import { toast, Toaster } from "sonner";
+import { storage } from "../../services/firebase";
+import { truncateText } from "../../utils/truncateText";
 export const Archivos = () => {
-  const files = [
-    { id: 1, nombre: "Publicación 1", fecha: "2024-09-25" },
-    { id: 2, nombre: "Publicación 2", fecha: "2024-09-26" },
-    { id: 3, nombre: "Publicación 3", fecha: "2024-09-27" },
-    { id: 4, nombre: "Publicación 4", fecha: "2024-09-28" },
-    { id: 5, nombre: "Publicación 5", fecha: "2024-09-29" },
-    { id: 6, nombre: "Publicación 6", fecha: "2024-09-30" },
-    { id: 7, nombre: "Publicación 7", fecha: "2024-10-01" },
-    { id: 8, nombre: "Publicación 8", fecha: "2024-10-02" },
-    { id: 9, nombre: "Publicación 9", fecha: "2024-10-03" },
-    { id: 10, nombre: "Publicación 10", fecha: "2024-10-04" },
-  ];
+  const { filesFromPublications, Refresh, loading } = useStorage({
+    filesRoute: "publications/files",
+  });
 
-  const handleButtonClick = () => {
-    console.log("click");
+  const handleButtonClick = async (item: any) => {
+    try {
+      const fileRef = ref(storage, item.url);
+      await deleteObject(fileRef);
+      toast.success(
+        `Archivo ${truncateText(item.filename)} eliminado exitosamente!`
+      );
+    } catch (error) {
+      toast.error(`Hubo un error. ${error}`);
+    } finally {
+      Refresh();
+    }
   };
-
   useEffect(() => {
     console.log(" estas en la ruta de archivos");
-  }, []);
+    if (filesFromPublications.length > 0) {
+      console.log(filesFromPublications);
+    }
+  }, [filesFromPublications]);
   return (
-    <section className="bg-neutral-100 w-full h-screen flex flex-col justify-center items-center py-20 text-black">
-      <Link to={"upload"}>
-        <FromDevzButton click={handleButtonClick} text="Subir archivo">
-          <Plus size={20} />
-        </FromDevzButton>
-      </Link>
+    <section className="bg-neutral-100 w-full min-h-screen flex flex-col justify-center items-center py-40 text-black">
+      {loading ? (
+        <LoaderCircle className="text-neutral-800 animate-spin" />
+      ) : filesFromPublications.length > 0 ? (
+        <>
+          <Link to={"upload"}>
+            <FromDevzButton text="Subir archivo">
+              <Plus size={20} />
+            </FromDevzButton>
+          </Link>
 
-      <div className="w-[calc(100%-240px)] h-full p-5">
-        <Table
-          tableTitle="Archivo"
-          items={files}
-          handleButtonClick={handleButtonClick}
-          documentFormatter={false}
-          imageFormatter={false}
-          fileFormatter={true}
-        />
-      </div>
+          <div className="w-[calc(100%-240px)] h-full p-5">
+            <Table
+              tableTitle="Archivo"
+              files={filesFromPublications}
+              handleButtonClick={handleButtonClick}
+              documentFormatter={false}
+              imageFormatter={false}
+              fileFormatter={true}
+            />
+          </div>
+        </>
+      ) : (
+        <h3 className="text-xl font-bold">No hay archivos</h3>
+      )}
+      <Toaster />
     </section>
   );
 };

@@ -1,49 +1,62 @@
 // src/pages/Publicaciones.jsx
 import { useEffect } from "react";
 import { FromDevzButton } from "../../components/button/FromDevzButton";
-import { Plus } from "lucide-react";
+import { LoaderCircle, Plus } from "lucide-react";
 import image from "../../assets/servicio-card.png";
 import { Table } from "../../components/table/Table";
 import { Link } from "react-router-dom";
+import { useStorage } from "../../hooks/useStorage";
+import { storage } from "../../services/firebase";
+import { deleteObject, ref } from "firebase/storage";
+import { toast, Toaster } from "sonner";
 export const Imagenes = () => {
-  const images = [
-    { id: 1, name: "Publicación 1", url: image },
-    { id: 2, name: "Publicación 2", url: image },
-    { id: 3, name: "Publicación 3", url: image },
-    { id: 4, name: "Publicación 4", url: image },
-    { id: 5, name: "Publicación 5", url: image },
-    { id: 6, name: "Publicación 6", url: image },
-    { id: 7, name: "Publicación 7", url: image },
-    { id: 8, name: "Publicación 8", url: image },
-    { id: 9, name: "Publicación 9", url: image },
-    { id: 10, name: "Publicación 10", url: image },
-  ];
+  const { loading, imagesFromPublications, imagesFromProjects, Refresh } =
+    useStorage({
+      projectsRoute: "/projects/images",
+      publicationsRoute: "/publications/images",
+    });
 
-  const handleButtonClick = () => {
-    console.log("click");
+  const handleButtonClick = async (item: string) => {
+    try {
+      const fileRef = ref(storage, item);
+      await deleteObject(fileRef);
+      toast.success("Imagen eliminada exitosamente!");
+    } catch (error) {
+      toast.error(`Hubo un error. ${error}`);
+    } finally {
+      Refresh();
+    }
   };
 
   useEffect(() => {
     console.log(" estas en la ruta de Imagenes");
   }, []);
   return (
-    <section className="bg-neutral-100 w-full h-screen py-20 flex flex-col justify-center items-center text-black">
-      <Link to={"upload"}>
-        <FromDevzButton click={handleButtonClick} text="Cargar imagen">
-          <Plus size={20} />
-        </FromDevzButton>
-      </Link>
+    <section className="bg-neutral-100 w-full min-h-screen py-20 flex flex-col justify-center items-center text-black">
+      {loading ? (
+        <LoaderCircle className="text-neutral-800 animate-spin" />
+      ) : (
+        <>
+          <Link to={"upload"}>
+            <FromDevzButton text="Cargar imagen">
+              <Plus size={20} />
+            </FromDevzButton>
+          </Link>
 
-      <div className="w-[calc(100%-240px)] h-full p-5">
-        <Table
-          tableTitle="Imagenes"
-          items={images}
-          handleButtonClick={handleButtonClick}
-          imageFormatter={true}
-          documentFormatter={false}
-          fileFormatter={false}
-        />
-      </div>
+          <div className="w-[calc(100%-240px)] h-full p-5">
+            <Table
+              tableTitle="Imagenes"
+              items1={imagesFromPublications}
+              items2={imagesFromProjects}
+              handleButtonClick={handleButtonClick}
+              imageFormatter={true}
+              documentFormatter={false}
+              fileFormatter={false}
+            />
+          </div>
+        </>
+      )}
+      <Toaster />
     </section>
   );
 };

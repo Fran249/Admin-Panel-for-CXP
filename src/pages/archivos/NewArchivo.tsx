@@ -5,48 +5,47 @@ import React, { useState } from "react";
 import { storage } from "../../services/firebase";
 import { toast, Toaster } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { truncateText } from "../../utils/truncateText";
 
-export const NewImagen = () => {
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+export const NewArchivo = () => {
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [rutaSeleccionada, setRutaSeleccionada] = useState<string>("");
   const navigate = useNavigate();
 
-  const handleUploadImages = async () => {
+  const handleUploadFiles = async () => {
     setLoading(true);
     try {
-      const uploadPromises = selectedImages.map((imagen: File) => {
-        const storageRef = ref(storage, `${rutaSeleccionada}${imagen.name}`);
-        return uploadBytes(storageRef, imagen);
-      });
-
-      // Esperar a que todas las imágenes se suban
-      await Promise.all(uploadPromises);
-
-      toast.success(
-        "Imagenes cargadas exitosamente! dirigiendo a la vista de Imagenes..."
-      );
-      
+      // Mapeamos los archivos seleccionados y subimos cada uno
+      for (const archivo of selectedFiles) {
+        const storageRef = ref(storage, `${rutaSeleccionada}${archivo.name}`);
+        await uploadBytes(storageRef, archivo); // Espera a que se complete la carga
+      }
+  
+      // Mensaje de éxito
+      toast.success("Archivos cargados exitosamente! Dirigiendo a la vista de Archivos...");
+  
+      // Redirigir después de 3 segundos
       setTimeout(() => {
-        navigate("/dashboard/imagenes");
+        navigate("/dashboard/archivos");
       }, 3000);
-      
     } catch (error) {
+      // Manejo de errores
       toast.error(`Ha ocurrido un error. ${error}`);
     } finally {
-      setLoading(false); // Asegurar que el estado de loading se cambie incluso si hay un error
+      // Asegura que el estado de loading se cambie
+      setLoading(false);
     }
   };
+  
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
       const fileArray = Array.from(files); // Convertir los archivos a un array
-      setSelectedImages(fileArray);
-
-      const previews = fileArray.map((file) => URL.createObjectURL(file)); // Crear URLs de vista previa
-      setPreviewUrls(previews);
+      setSelectedFiles(fileArray);
+      setPreviewUrls(fileArray)
     }
   };
 
@@ -74,12 +73,14 @@ export const NewImagen = () => {
                   ? previewUrls.slice(0, 2)
                   : previewUrls
                 ).map((previewUrl, index) => (
-                  <img
+                  <div
                     key={index}
-                    src={previewUrl}
-                    alt={`Vista previa ${index + 1}`}
-                    className="w-[300px] h-[300px] object-cover"
-                  />
+                    className="w-[300px] h-[300px] rounded-lg border-[.5px] border-neutral-800 flex justify-center items-center relative"
+                  >
+                    <div className=" flex justify-center items-center w-full rounded-t-lg h-16 absolute top-0 left-0 bg-neutral-800 text-neutral-200">
+                      <h3>{truncateText(previewUrl.name)}</h3>
+                    </div>
+                  </div>
                 ))}
                 {previewUrls.length > 2 && (
                   <div className="w-[300px] h-[300px] rounded-lg border-[.5px] border-neutral-800 flex justify-center items-center text-xl ">
@@ -90,7 +91,7 @@ export const NewImagen = () => {
             </div>
           )}
 
-          {selectedImages.length > 0 && (
+          {selectedFiles.length > 0 && (
             <div className="flex flex-col justify-center items-start gap-6">
               <h3 className="text-lg font-semibold">Seleccione la ruta</h3>
               <div className="flex justify-start items-center gap-4">
@@ -99,8 +100,8 @@ export const NewImagen = () => {
                     type="checkbox"
                     name="ruta"
                     id="ruta-proyectos"
-                    value="projects/images/"
-                    checked={rutaSeleccionada === "projects/images/"}
+                    value="/projects/files/"
+                    checked={rutaSeleccionada === "/projects/files/"}
                     onChange={handleRutaChange}
                     className={inputClasses}
                   />
@@ -114,8 +115,8 @@ export const NewImagen = () => {
                     type="checkbox"
                     name="ruta"
                     id="ruta-publicaciones"
-                    value="publications/images/"
-                    checked={rutaSeleccionada === "publications/images/"}
+                    value="/publications/files/"
+                    checked={rutaSeleccionada === "/publications/files/"}
                     onChange={handleRutaChange}
                     className={inputClasses}
                   />
@@ -130,14 +131,14 @@ export const NewImagen = () => {
           <input
             className={inputClasses}
             type="file"
-            accept="image/*"
+            accept=".pdf"
             multiple
-            onChange={handleImageChange}
+            onChange={handleFileChange}
           />
 
-          {selectedImages.length > 0 && rutaSeleccionada && (
+          {selectedFiles.length > 0 && rutaSeleccionada && (
             <div className="w-full flex justify-center items-center">
-              <FromDevzButton text="Cargar imágenes" click={handleUploadImages}>
+              <FromDevzButton text="Cargar archivos" click={handleUploadFiles}>
                 <Save />
               </FromDevzButton>
             </div>
