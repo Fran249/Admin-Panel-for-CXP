@@ -71,7 +71,7 @@ export const Login = () => {
         severity="error"
       />
       <footer className="absolute bottom-0 righ-0 w-full h-20 bg-transparent flex flex-col justify-center items-end pr-10 text-white text-sm">
-        <FromDevzIcon width="200"/>
+        <FromDevzIcon width="150"/>
         <h3 className="uppercase">all rights reserved</h3>
       </footer>
     </section>

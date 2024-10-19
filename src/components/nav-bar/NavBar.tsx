@@ -47,11 +47,11 @@ const NavBar = () => {
       name: "Archivos",
       icon: <File />,
     },
-    {
-      route: "consultores",
-      name: "Consultores",
-      icon: <Users />,
-    },
+    // {
+    //   route: "consultores",
+    //   name: "Consultores",
+    //   icon: <Users />,
+    // },
   ];
   const cargarArray = [
     {
@@ -74,11 +74,11 @@ const NavBar = () => {
       name: "Cargar archivos",
       icon: <FilePlus />, // Archivo con un "+" para cargar archivos
     },
-    {
-      route: "consultores/upload",
-      name: "Cargar consultores",
-      icon: <UserPlus />, // Usuarios con un "+" para agregar consultores
-    },
+    // {
+    //   route: "consultores/upload",
+    //   name: "Cargar consultores",
+    //   icon: <UserPlus />, // Usuarios con un "+" para agregar consultores
+    // },
   ];
   const [showVistas, setShowVistas] = useState(false);
   const [showCargar, setShowCargar] = useState(false);
