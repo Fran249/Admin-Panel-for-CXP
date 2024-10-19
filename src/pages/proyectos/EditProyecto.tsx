@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { db, storage } from "../../services/firebase";
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import {
   FileText,
@@ -9,7 +9,6 @@ import {
   Save,
   Tag,
   Trash,
-  Upload,
 } from "lucide-react";
 import { useState } from "react";
 import { toast, Toaster } from "sonner";

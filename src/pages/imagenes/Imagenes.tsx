@@ -2,7 +2,6 @@
 import { useEffect } from "react";
 import { FromDevzButton } from "../../components/button/FromDevzButton";
 import { LoaderCircle, Plus } from "lucide-react";
-import image from "../../assets/servicio-card.png";
 import { Table } from "../../components/table/Table";
 import { Link } from "react-router-dom";
 import { useStorage } from "../../hooks/useStorage";
