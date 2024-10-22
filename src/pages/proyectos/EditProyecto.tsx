@@ -2,14 +2,7 @@ import React, { useEffect } from "react";
 import { db, storage } from "../../services/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import {
-  FileText,
-  Image,
-  LoaderCircle,
-  Save,
-  Tag,
-  Trash,
-} from "lucide-react";
+import { FileText, Image, LoaderCircle, Save, Tag, Trash } from "lucide-react";
 import { useState } from "react";
 import { toast, Toaster } from "sonner";
 import { motion } from "framer-motion";
@@ -44,6 +37,7 @@ export const EditProyecto = () => {
   const [imageId, setImageId] = useState<string>("");
   const [isIndustriaOpen, setIsIndustriaOpen] = useState(false);
   const [hasImage, setHasImage] = useState(false);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [formData, setFormData] = useState<FormData>({
     imagenes: [],
     nombre_proyecto: "",
@@ -124,16 +118,20 @@ export const EditProyecto = () => {
       "Imagen eliminada del documento, no olvide guardar cambios para que surga efecto!"
     );
   };
-//   const handleImagen = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     if (e.target.files) {
-//       setImage(Array.from(e.target.files));
-//     }
-//     console.log(e.target.files);
-//   };
+  //   const handleImagen = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //     if (e.target.files) {
+  //       setImage(Array.from(e.target.files));
+  //     }
+  //     console.log(e.target.files);
+  //   };
   const handleImagen = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files);
-        console.log(filesArray)
+    const {  files } = e.target;
+    if (files) {
+      const fileArray = Array.from(files);
+      const previewArray = fileArray.map((file) => URL.createObjectURL(file));
+      setPreviewUrls(previewArray);
+      const filesArray = Array.from(files);
+      console.log(filesArray);
       setImage(filesArray); // Guardar todas las imágenes seleccionadas en el estado
     }
   };
@@ -142,7 +140,7 @@ export const EditProyecto = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    
+
     let imageUrls = images ? [...images] : []; // Mantener las URLs existentes
 
     if (hasImage && image.length > 0) {
@@ -153,19 +151,18 @@ export const EditProyecto = () => {
           await uploadBytes(storageRef, imagen); // Subir cada imagen
           return getDownloadURL(storageRef); // Obtener URL de la imagen subida
         });
-    
+
         // Esperar a que se completen todas las subidas y obtener nuevas URLs
         const newImageUrls = await Promise.all(uploadPromises);
-    
+
         // Combinar las nuevas URLs con las existentes
         imageUrls = [...imageUrls, ...newImageUrls];
-    
-        console.log('URLs de imágenes finalizadas:', imageUrls);
+
+        console.log("URLs de imágenes finalizadas:", imageUrls);
       } catch (error) {
-        console.error('Error al subir las imágenes:', error);
+        console.error("Error al subir las imágenes:", error);
       }
     }
-    
 
     const newProject = {
       imagenes: imageUrls,
@@ -396,6 +393,32 @@ export const EditProyecto = () => {
                       <label htmlFor="imagenes" className={labelClasses}>
                         Imagenes Nuevas
                       </label>
+                      {previewUrls && (
+                        <div className="flex justify-center items-center">
+                          {previewUrls.length <= 3 ? (
+                            previewUrls.map((url, index) => (
+                              <img
+                                key={index}
+                                src={url}
+                                alt="Preview"
+                                className="mt-2 rounded-lg w-32 h-32"
+                              />
+                            ))
+                          ) : (
+                            <>
+                              {previewUrls.slice(0, 3).map((url, index) => (
+                                <img
+                                  key={index}
+                                  src={url}
+                                  alt="Preview"
+                                  className="mt-2 rounded-lg w-32 h-32"
+                                />
+                              ))}
+                              <h3>Y {previewUrls.length - 3} mas..</h3>
+                            </>
+                          )}
+                        </div>
+                      )}
                       <div className="mt-1 flex items-center">
                         <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-neutral-200 p-2">
                           <Image className="h-full w-full text-neutral-500" />

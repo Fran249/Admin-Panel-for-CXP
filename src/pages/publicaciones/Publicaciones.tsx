@@ -14,7 +14,7 @@ export const Publicaciones = () => {
   const handleButtonClick = async (pub: any) => {
     console.log("Documento a eliminar:", pub);
     setLoading(true);
-
+    console.log("Eliminando documento con ID:", pub.id);
     const docRef = doc(db, "publications", pub.id);
     try {
       await deleteDoc(docRef);

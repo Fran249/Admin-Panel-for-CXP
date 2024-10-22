@@ -16,8 +16,8 @@ export const Proyectos = () => {
   const handleButtonClick = async (pub: any) => {
     console.log("Documento a eliminar:", pub);
     setLoading(true);
-
-    const docRef = doc(db, "publications", pub.id);
+    console.log("Eliminando documento:", pub.id);
+    const docRef = doc(db, "projects", pub.id);
     try {
       await deleteDoc(docRef);
       toast.success("Documento borrado con éxito!");

@@ -10,7 +10,7 @@ interface Publication {
   autor_publicacion: string;
   coautores: string[];
   fecha_publicacion: string;
-  imagen: string;
+  imagenes: string[];
   industria_asociada: string[];
   keywords: string[];
   lugar_publicacion: string;

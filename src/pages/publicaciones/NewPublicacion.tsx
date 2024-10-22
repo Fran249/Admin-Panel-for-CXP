@@ -26,7 +26,7 @@ type FormData = {
   autor_publicacion: string;
   coautores: string[];
   fecha_publicacion: string;
-  imagen: File | null;
+  imagenes: File[] | null;
   industria_asociada: string[];
   keywords: string[];
   lugar_publicacion: string;
@@ -44,7 +44,7 @@ export const NewPublicacion = () => {
     autor_publicacion: "",
     coautores: Array(5).fill(""),
     fecha_publicacion: "",
-    imagen: null,
+    imagenes: null,
     industria_asociada: [],
     keywords: Array(5).fill(""),
     lugar_publicacion: "",
@@ -55,6 +55,7 @@ export const NewPublicacion = () => {
 
   const [isServiciosOpen, setIsServiciosOpen] = useState(false);
   const [isIndustriaOpen, setIsIndustriaOpen] = useState(false);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
   const inputClasses =
     "w-full p-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 bg-neutral-200 text-neutral-800";
@@ -87,7 +88,18 @@ export const NewPublicacion = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
     if (files) {
-      setFormData((prev) => ({ ...prev, [name]: files[0] }));
+      // Generar URLs de vista previa
+      const fileArray = Array.from(files);
+      const previewArray = fileArray.map((file) => URL.createObjectURL(file));
+
+      // Actualizar el estado de previewUrls
+      setPreviewUrls(previewArray);
+
+      // Actualizar el estado del formData con los archivos seleccionados
+      setFormData((prev) => ({
+        ...prev,
+        [name]: Array.from(files), // Convertimos FileList a un array de archivos
+      }));
     }
   };
 
@@ -98,17 +110,19 @@ export const NewPublicacion = () => {
     try {
       const publicationsCollection = collection(db, "publications");
 
-      // Cargar la imagen en Firebase Storage
-      let imageUrl = null;
-      if (formData.imagen) {
-        const storageRef = ref(
-          storage,
-          `publications/images/${formData.imagen.name}`
-        );
-        await uploadBytes(storageRef, formData.imagen);
-        imageUrl = await getDownloadURL(storageRef);
-      }
 
+      let imageUrls: string[] = [];
+      if (formData.imagenes) {
+        const uploadPromises = formData.imagenes.map(async (image) => {
+          const storageRef = ref(storage, `publications/images/${image.name}`);
+          await uploadBytes(storageRef, image);
+          return getDownloadURL(storageRef);
+        });
+
+        imageUrls = await Promise.all(uploadPromises);
+        console.log(imageUrls)
+      }
+      
       // Cargar el archivo en Firebase Storage
       let fileUrl = null;
       if (formData.archivo) {
@@ -120,18 +134,19 @@ export const NewPublicacion = () => {
         fileUrl = await getDownloadURL(storageRef);
       }
 
-      // Agregar las URLs de la imagen y archivo al formData
+
       const updatedFormData = {
         ...formData,
-        imagen: imageUrl,
+        imagenes: imageUrls,
         archivo: fileUrl,
       };
 
-      // Agregar el documento a Firestore con las URLs
+
+      console.log(updatedFormData);
       await addDoc(publicationsCollection, updatedFormData);
       setLoading(false);
       setTimeout(() => {
-        navigate('/dashboard/publicaciones'); // Navega hacia la ruta deseada
+        navigate("/dashboard/publicaciones"); // Navega hacia la ruta deseada
       }, 3000);
       toast.success(
         "Documento creado con éxito! Dirigiendo a la vista de Publicaciones..."
@@ -291,17 +306,43 @@ export const NewPublicacion = () => {
               </div>
               {/*Imagen*/}
               <div>
-                <label htmlFor="imagen" className={labelClasses}>
-                  Imagen
+                <label htmlFor="imagenes" className={labelClasses}>
+                  Imagenes
                 </label>
+                {previewUrls && (
+                  <div className="flex justify-center items-center">
+                    {previewUrls.length <= 3 ? (
+                      previewUrls.map((url, index) => (
+                        <img
+                          key={index}
+                          src={url}
+                          alt="Preview"
+                          className="mt-2 rounded-lg w-32 h-32"
+                        />
+                      ))
+                    ) : (
+                      <>
+                        {previewUrls.slice(0, 3).map((url, index) => (
+                          <img
+                            key={index}
+                            src={url}
+                            alt="Preview"
+                            className="mt-2 rounded-lg w-32 h-32"
+                          />
+                        ))}
+                        <h3>Y {previewUrls.length - 3} mas..</h3>
+                      </>
+                    )}
+                  </div>
+                )}
                 <div className="mt-1 flex items-center">
                   <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-neutral-200 p-2">
                     <Image className="h-full w-full text-neutral-500" />
                   </span>
                   <input
                     type="file"
-                    name="imagen"
-                    id="imagen"
+                    name="imagenes"
+                    id="imagenes"
                     accept="image/*"
                     className="ml-5 bg-neutral-200 py-2 px-3 border border-neutral-300 rounded-md shadow-sm text-sm leading-4 font-medium text-neutral-800 hover:bg-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500"
                     onChange={handleFileChange}

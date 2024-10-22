@@ -27,7 +27,7 @@ type FormData = {
   autor_publicacion: string;
   coautores: string[];
   fecha_publicacion: string;
-  imagen: File | null;
+  imagenes: File[] | null;
   industria_asociada: string[];
   keywords: string[];
   lugar_publicacion: string;
@@ -46,8 +46,7 @@ export const EditPublicacion = () => {
 
   const [image, setImage] = useState<File[]>([]);
   const [archivo, setArchivo] = useState<File[]>([]);
-
-
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [formData, setFormData] = useState<FormData>({
     titulo_publicacion: "",
     abstract: "",
@@ -55,7 +54,7 @@ export const EditPublicacion = () => {
     autor_publicacion: "",
     coautores: Array(5).fill(""),
     fecha_publicacion: "",
-    imagen: null,
+    imagenes: null,
     industria_asociada: [],
     keywords: Array(5).fill(""),
     lugar_publicacion: "",
@@ -81,7 +80,6 @@ export const EditPublicacion = () => {
     "w-full p-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 bg-neutral-200 text-neutral-800";
   const labelClasses = "block text-sm font-medium text-neutral-800 mb-1";
 
-
   useEffect(() => {
     if (findedDocPublications) {
       setFormData({
@@ -91,7 +89,7 @@ export const EditPublicacion = () => {
         autor_publicacion: findedDocPublications.autor_publicacion,
         coautores: findedDocPublications.coautores,
         fecha_publicacion: findedDocPublications.fecha_publicacion,
-        imagen: null,
+        imagenes: null,
         industria_asociada: findedDocPublications.industria_asociada,
         keywords: findedDocPublications.keywords,
         lugar_publicacion: findedDocPublications.lugar_publicacion,
@@ -103,8 +101,14 @@ export const EditPublicacion = () => {
 
   /*HANDLE IMAGEN*/
   const handleImagen = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setImage(Array.from(e.target.files));
+    const { files } = e.target;
+    if (files) {
+      const fileArray = Array.from(files);
+      const previewArray = fileArray.map((file) => URL.createObjectURL(file));
+
+      // Actualizar el estado de previewUrls
+      setPreviewUrls(previewArray);
+      setImage(Array.from(files));
     }
   };
   /*HANDLE ARCHIVO*/
@@ -116,20 +120,18 @@ export const EditPublicacion = () => {
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    index?: number 
+    index?: number
   ) => {
     const { name, value } = e.target;
-  
+
     if (index !== undefined && name.startsWith("keywords_")) {
- 
       setFormData((prev) => {
-        const updatedKeywords = [...prev.keywords]; 
-        updatedKeywords[index] = value; 
-  
+        const updatedKeywords = [...prev.keywords];
+        updatedKeywords[index] = value;
+
         return { ...prev, keywords: updatedKeywords };
       });
     } else {
-
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
@@ -156,18 +158,24 @@ export const EditPublicacion = () => {
     e.preventDefault();
     setLoading(true);
 
-    let imageUrl = findedDocPublications?.imagen; 
+    let imageUrls = findedDocPublications ? findedDocPublications.imagenes : [];
+
     if (image.length > 0) {
-      const imageRef = ref(storage, `publications/images/${image[0].name}`);
-      await uploadBytes(imageRef, image[0]); 
-      imageUrl = await getDownloadURL(imageRef); 
+      const uploadPromises = image.map(async (image) => {
+        const storageRef = ref(storage, `publications/images/${image.name}`);
+        await uploadBytes(storageRef, image);
+        return getDownloadURL(storageRef);
+      });
+
+      imageUrls = await Promise.all(uploadPromises);
+      console.log(imageUrls);
     }
 
-    let archivoUrl = findedDocPublications?.archivo; 
+    let archivoUrl = findedDocPublications?.archivo;
     if (archivo.length > 0) {
       const archivoRef = ref(storage, `publications/files/${archivo[0].name}`);
-      await uploadBytes(archivoRef, archivo[0]); 
-      archivoUrl = await getDownloadURL(archivoRef); 
+      await uploadBytes(archivoRef, archivo[0]);
+      archivoUrl = await getDownloadURL(archivoRef);
     }
 
     const newPublicacion = {
@@ -179,18 +187,17 @@ export const EditPublicacion = () => {
       industria_asociada: formData.industria_asociada,
       lugar_publicacion: formData.lugar_publicacion,
       keywords: formData.keywords,
-      imagen: imageUrl, 
-      archivo: archivoUrl, 
+      imagenes: imageUrls,
+      archivo: archivoUrl,
     };
 
-
-    const docRef = doc(db, "publications", id); 
+    const docRef = doc(db, "publications", id);
     await updateDoc(docRef, newPublicacion);
     setLoading(false);
 
     console.log("Publicación actualizada:", newPublicacion);
     setTimeout(() => {
-      navigate("/dashboard/publicaciones")
+      navigate("/dashboard/publicaciones");
     }, 3000);
     toast.success(
       "Documento actualizado con exito! Dirigiendo a la vista de Publicaciones..."
@@ -504,18 +511,55 @@ export const EditPublicacion = () => {
             </div>
             {/*IMAGEN*/}
             <div>
-              <label htmlFor="imagen" className={labelClasses}>
-                Imagen
+              <label htmlFor="imagenes" className={labelClasses}>
+                Imagenes
               </label>
-              {findedDocPublications?.imagen && (
-                <div className="my-4">
-                  <h3 className="font-bold">Imagen previa</h3>
-                  <img
-                    className="w-40 h-32 rounded-lg shadow-sm shadow-neutral-800"
-                    src={findedDocPublications?.imagen}
-                    alt=""
-                  />
+              {findedDocPublications?.imagenes && (
+                <div className="my-4 ">
+                  <h3 className="font-bold">Imagenes previas</h3>
+                  <div className=" flex justify-center items-center gap-2">
+                    {findedDocPublications.imagenes.map((image, index) => (
+                      <img
+                        src={image}
+                        alt={`Imagen ${index + 1}`}
+                        className="w-32 h-32 rounded-lg"
+                      />
+                    ))}
+                  </div>
                 </div>
+              )}
+              {previewUrls.length > 0 && (
+                <>
+                <div className="font-bold">
+                <h3 className="font-bold">Nuevas imagenes</h3>
+                </div>
+                  <div className="flex justify-center items-center">
+                    {previewUrls.length <= 3 ? (
+                      previewUrls.map((url, index) => (
+                        <img
+                          key={index}
+                          src={url}
+                          alt="Preview"
+                          className="mt-2 rounded-lg w-32 h-32"
+                        />
+                      ))
+                    ) : (
+                      <>
+                        {previewUrls.slice(0, 2).map((url, index) => (
+                          <img
+                            key={index}
+                            src={url}
+                            alt="Preview"
+                            className="mt-2 rounded-lg w-32 h-32"
+                          />
+                        ))}
+                        <div className="w-32 h-32 rounded-lg border-[.5px] border-neutral-800 flex justify-center items-center">
+                          <h3>Y {previewUrls.length - 2} mas..</h3>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </>
               )}
               <div className="mt-1 flex items-center">
                 <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-neutral-200">
@@ -523,8 +567,9 @@ export const EditPublicacion = () => {
                 </span>
                 <input
                   type="file"
-                  name="imagen"
-                  id="imagen"
+                  name="imagenes"
+                  id="imagenes"
+                  
                   accept="image/*"
                   className="ml-5 bg-neutral-200 py-2 px-3 border border-neutral-300 rounded-md shadow-sm text-sm leading-4 font-medium text-neutral-800 hover:bg-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500"
                   onChange={(e) => handleImagen(e)}

@@ -26,6 +26,7 @@ export const NewProyecto = () => {
   const [loading, setLoading] = useState(false);
   const [isIndustriaOpen, setIsIndustriaOpen] = useState(false);
   const [hasImage, setHasImage] = useState(false);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [formData, setFormData] = useState<FormData>({
     imagenes: [],
     nombre_proyecto: "",
@@ -66,14 +67,19 @@ export const NewProyecto = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
     if (files) {
+
+      const fileArray = Array.from(files);
+      const previewArray = fileArray.map((file) => URL.createObjectURL(file));
+      setPreviewUrls(previewArray);
+
       setFormData((prev) => ({
         ...prev,
-        [name]: Array.isArray(prev[name as keyof typeof prev]) // Verificar que es un array
+        [name]: Array.isArray(prev[name as keyof typeof prev]) 
           ? [
               ...(prev[name as keyof typeof prev] as File[]),
               ...Array.from(files),
-            ] // Si es un array, propagar
-          : Array.from(files), // Si no es un array, inicializar con los nuevos archivos
+            ] 
+          : Array.from(files), 
       }));
     }
     console.log(files, name);
@@ -123,7 +129,7 @@ export const NewProyecto = () => {
         latitude: "",
       });
       setTimeout(() => {
-        navigate('/dashboard/proyectos'); // Navega hacia la ruta deseada
+        navigate("/dashboard/proyectos"); // Navega hacia la ruta deseada
       }, 3000);
 
       toast.success(
@@ -302,6 +308,32 @@ export const NewProyecto = () => {
                     <label htmlFor="imagenes" className={labelClasses}>
                       Imagenes
                     </label>
+                    {previewUrls && (
+                      <div className="flex justify-center items-center">
+                        {previewUrls.length <= 3 ? (
+                          previewUrls.map((url, index) => (
+                            <img
+                              key={index}
+                              src={url}
+                              alt="Preview"
+                              className="mt-2 rounded-lg w-32 h-32"
+                            />
+                          ))
+                        ) : (
+                          <>
+                            {previewUrls.slice(0, 3).map((url, index) => (
+                              <img
+                                key={index}
+                                src={url}
+                                alt="Preview"
+                                className="mt-2 rounded-lg w-32 h-32"
+                              />
+                            ))}
+                            <h3>Y {previewUrls.length - 3} mas..</h3>
+                          </>
+                        )}
+                      </div>
+                    )}
                     <div className="mt-1 flex items-center">
                       <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-neutral-200 p-2">
                         <Image className="h-full w-full text-neutral-500" />
