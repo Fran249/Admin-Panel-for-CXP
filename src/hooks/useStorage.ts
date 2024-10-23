@@ -7,28 +7,31 @@ type Props = {
   publicationsRoute?: string;
   projectsRoute?: string;
   filesRoute?: string;
+  consultoresRoute?: string;
 };
 
 export const useStorage = ({
   projectsRoute,
   publicationsRoute,
+  consultoresRoute,
   filesRoute,
 }: Props) => {
-  const [imagesFromPublications, setImagesFromPublications] = useState<string[]>([]);
+  const [imagesFromPublications, setImagesFromPublications] = useState<
+    string[]
+  >([]);
   const [imagesFromProjects, setImagesFromProjects] = useState<string[]>([]);
+  const [imagesFromConsultores, setImagesFromConsultores] = useState<string[]>([]);
   const [filesFromPublications, setFilesFromPublications] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-
-
 
   const fetchStorage = async () => {
     setLoading(true);
 
     const projectsRef = ref(storage, projectsRoute);
     const publicationsRef = ref(storage, publicationsRoute);
-   
+    const consultoresRef = ref(storage, consultoresRoute);
     try {
-      if (projectsRoute && publicationsRoute) {
+      if (projectsRoute || publicationsRoute ||  consultoresRoute) {
         const listaProjects = await listAll(projectsRef);
         const urlProjects = await Promise.all(
           listaProjects.items.map((item) => getDownloadURL(item))
@@ -37,13 +40,18 @@ export const useStorage = ({
         const urlPublications = await Promise.all(
           listaPublications.items.map((item) => getDownloadURL(item))
         );
+        const listaConsultores = await listAll(consultoresRef);
+        const urlConsultores = await Promise.all(
+          listaConsultores.items.map((item) => getDownloadURL(item))
+        );
+        setImagesFromConsultores(urlConsultores);
         setImagesFromProjects(urlProjects);
         setImagesFromPublications(urlPublications);
       }
       if (filesRoute) {
         const filesRef = ref(storage, filesRoute);
         const listaFiles = await listAll(filesRef);
-      
+
         const urlFiles = await Promise.all(
           listaFiles.items.map(async (item) => {
             const url = await getDownloadURL(item);
@@ -51,7 +59,7 @@ export const useStorage = ({
             return { filename, url }; // Devuelve el objeto con filename y url
           })
         );
-      
+
         setFilesFromPublications(urlFiles);
       }
     } catch (error) {
@@ -70,6 +78,7 @@ export const useStorage = ({
     loading,
     imagesFromProjects,
     imagesFromPublications,
+    imagesFromConsultores,
     filesFromPublications,
     Refresh,
   };

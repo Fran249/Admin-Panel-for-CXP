@@ -15,9 +15,10 @@ type Props = {
   items2?: any[];
   files?: any[];
   handleButtonClick: (pub: any) => void;
-  imageFormatter: boolean;
-  documentFormatter: boolean;
-  fileFormatter: boolean;
+  imageFormatter?: boolean;
+  documentFormatter?: boolean;
+  fileFormatter?: boolean;
+  consultorFormatter?: boolean;
   tableTitle?: string;
 };
 
@@ -30,6 +31,7 @@ export const Table = ({
   imageFormatter,
   documentFormatter,
   fileFormatter,
+  consultorFormatter,
   tableTitle,
 }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,6 +45,8 @@ export const Table = ({
     itemsPerPage = 5;
   } else if (fileFormatter) {
     itemsPerPage = 10;
+  } else if (consultorFormatter) {
+    itemsPerPage = 5;
   } else {
     itemsPerPage = 1;
   }
@@ -107,6 +111,57 @@ export const Table = ({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-800">
                     {pub.fecha_publicacion}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-800 flex gap-2">
+                    <Link to={`edit/${pub.id}`}>
+                      <FromDevzButton text="Editar">
+                        <Edit size={20} />
+                      </FromDevzButton>
+                    </Link>
+                    <FromDevzButton
+                      text="Eliminar"
+                      click={() => handleButtonClick(pub)}
+                    >
+                      <Trash size={20} />
+                    </FromDevzButton>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </motion.div>
+      )}
+      {consultorFormatter && (
+        <motion.div
+          className="overflow-x-auto rounded-xl border-[.5px] border-neutral-800"
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          transition={{ duration: 0.5, delay: 0.1 }}
+          variants={stackVariants}
+        >
+          <table className="min-w-full divide-y divide-neutral-800">
+            <thead className="bg-neutral-100">
+              <tr>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-neutral-800 tracking-wider">
+                  {tableTitle}
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-neutral-800 tracking-wider">
+                  Ubicación
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-neutral-800 tracking-wider">
+                  Acciones
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-neutral-100 divide-y divide-neutral-800">
+              {currentItems.map((pub) => (
+                <tr key={pub.id}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-800">
+                    {pub.nombre_completo}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-800">
+                    {pub.ubicacion}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-800 flex gap-2">
                     <Link to={`edit/${pub.id}`}>

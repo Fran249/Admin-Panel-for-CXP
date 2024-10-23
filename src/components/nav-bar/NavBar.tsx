@@ -15,6 +15,8 @@ import {
   Settings,
   Fullscreen,
   X,
+  UserPlus,
+  Users,
 } from "lucide-react";
 import { appWindow } from "@tauri-apps/api/window";
 import { signOut } from "firebase/auth";
@@ -47,38 +49,38 @@ const NavBar = () => {
       name: "Archivos",
       icon: <File />,
     },
-    // {
-    //   route: "consultores",
-    //   name: "Consultores",
-    //   icon: <Users />,
-    // },
+    {
+      route: "consultores",
+      name: "Consultores",
+      icon: <Users />,
+    },
   ];
   const cargarArray = [
     {
       route: "publicaciones/upload",
-      name: "Cargar publicaciones",
+      name: "Publicaciones",
       icon: <FilePlus />, // Archivo con un "+" para indicar cargar publicaciones
     },
     {
       route: "proyectos/upload",
-      name: "Cargar proyectos",
+      name: "Proyectos",
       icon: <FolderPlus />, // Carpeta con un "+" para cargar proyectos
     },
     {
       route: "imagenes/upload",
-      name: "Cargar imagenes",
+      name: "Imagenes",
       icon: <ImagePlus />, // Imagen con un "+" para cargar imágenes
     },
     {
       route: "archivos/upload",
-      name: "Cargar archivos",
+      name: "Archivos",
       icon: <FilePlus />, // Archivo con un "+" para cargar archivos
     },
-    // {
-    //   route: "consultores/upload",
-    //   name: "Cargar consultores",
-    //   icon: <UserPlus />, // Usuarios con un "+" para agregar consultores
-    // },
+    {
+      route: "consultores/upload",
+      name: "Consultores",
+      icon: <UserPlus />, // Usuarios con un "+" para agregar consultores
+    },
   ];
   const [showVistas, setShowVistas] = useState(false);
   const [showCargar, setShowCargar] = useState(false);
@@ -137,13 +139,6 @@ const NavBar = () => {
   return (
     <>
       <nav className="w-full h-16 hover:h-40 hover:bg-neutral-900 hover:text-neutral-200 fixed z-30 duration-300 bg-neutral-100 flex">
-        <div className="flex justify-center items-center p-2 m-2">
-          <Tooltip title="Configuracion">
-            <button onClick={() => setOpenConfig(true)}>
-              <Settings />
-            </button>
-          </Tooltip>
-        </div>
         <div className="w-1/4 flex justify-start pl-2 items-center gap-10 ">
           {location.pathname !== "/dashboard/publicaciones" &&
             location.pathname !== "/dashboard/proyectos" &&
@@ -167,11 +162,13 @@ const NavBar = () => {
                     .reverse()
                     .join(" ")
                     .replace("dashboard", "")
-                    .replace("upload", "cargar")
+                    .replace("upload", "Cargar")
                 : location.pathname.startsWith("/dashboard/publicaciones/edit/") // Cambiado para usar startsWith
                 ? "Editar publicación" // Aquí se maneja la ruta de edición
-                : location.pathname.startsWith("/dashboard/proyectos/edit/") 
+                : location.pathname.startsWith("/dashboard/proyectos/edit/")
                 ? "Editar proyecto"
+                : location.pathname.startsWith("/dashboard/consultores/edit/")
+                ? "Editar consultor"
                 : location.pathname
                     .replace("dashboard", "")
                     .split("/")
@@ -185,7 +182,7 @@ const NavBar = () => {
             className="duration-300 flex items-center gap-2 rounded-lg border-[.5px] border-transparent hover:border-neutral-200 hover:border-[.5px] px-2 py-1"
             onClick={handleShowVistas}
           >
-            <h3 className="font-bold text-xl">Ver</h3>
+            <h3 className="font-semibold text-xl">Explorar</h3>
             <ChevronRight
               className={`duration-300 ${showVistas ? "rotate-180" : ""}`}
             />
@@ -221,7 +218,7 @@ const NavBar = () => {
             className="duration-300 flex items-center gap-2 rounded-lg border-[.5px] border-transparent hover:border-neutral-200 hover:border-[.5px] px-2 py-1"
             onClick={handleShowCargar}
           >
-            <h3 className="font-bold text-xl">Cargar</h3>
+            <h3 className="font-semibold text-xl">Cargar</h3>
             <ChevronRight
               className={`duration-300 ${showCargar ? "rotate-180" : ""}`}
             />
@@ -278,13 +275,23 @@ const NavBar = () => {
               </h3>
             </button>
           </div>
-          <Tooltip title="Cerrar" className="absolute top-10 right-10 text-neutral-100">
-            <button onClick={()=> setOpenConfig(false)}>
+          <Tooltip
+            title="Cerrar"
+            className="absolute top-10 right-10 text-neutral-100"
+          >
+            <button onClick={() => setOpenConfig(false)}>
               <X />
             </button>
           </Tooltip>
         </div>
       </Drawer>
+      <div className="flex justify-center items-center p-2 m-2 fixed bottom-5 right-0">
+        <Tooltip title="Configuracion">
+          <button onClick={() => setOpenConfig(true)}>
+            <Settings />
+          </button>
+        </Tooltip>
+      </div>
     </>
   );
 };

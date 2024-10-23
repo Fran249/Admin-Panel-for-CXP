@@ -12,16 +12,13 @@ export const Publicaciones = () => {
   const { publicaciones, loading, setLoading, refreshPublications } = useDb({ dbRoute: "publications" });
 
   const handleButtonClick = async (pub: any) => {
-    console.log("Documento a eliminar:", pub);
     setLoading(true);
-    console.log("Eliminando documento con ID:", pub.id);
     const docRef = doc(db, "publications", pub.id);
     try {
       await deleteDoc(docRef);
       toast.success("Documento borrado con éxito!");
-      await refreshPublications(); // Actualiza las publicaciones
+      await refreshPublications();
     } catch (error) {
-      console.error("Error al eliminar el documento:", error);
       toast.error("Error al borrar el documento.");
     } finally {
       setLoading(false);
@@ -33,7 +30,7 @@ export const Publicaciones = () => {
   }, []);
 
   return (
-    <section className="w-full min-h-screen py-20 flex flex-col justify-center items-center text-black bg-neutral-100">
+    <section className="w-full min-h-screen py-40 flex flex-col justify-center items-center text-black bg-neutral-100">
       {loading ? (
         <LoaderCircle className="text-neutral-900 animate-spin" />
       ) : (

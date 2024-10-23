@@ -31,6 +31,25 @@ interface Projects {
   latitude: string;
   longitude: string;
 }
+interface Consultores {
+  area_de_expertise_1: string;
+  id: string;
+  area_de_expertise_2: string;
+  avatar_image: string;
+  especialidad_1: string;
+  especialidad_2: string;
+  especialidad_3: string;
+  especialidad_4: string;
+  especialidad_5: string;
+  idiomas_1: string;
+  idiomas_2: string;
+  idiomas_3: string;
+  nombre_completo: string;
+  titulo_credencial_1: string;
+  titulo_credencial_2: string;
+  titulo_credencial_3: string;
+  ubicacion: string;
+}
 
 interface UseDbProps {
   dbRoute: string;
@@ -39,11 +58,13 @@ interface UseDbProps {
 
 export const useDb = ({ dbRoute, id }: UseDbProps) => {
   const [publicaciones, setPublicaciones] = useState<Publication[]>([]);
+  const [consultores, setConsultores] = useState<Consultores[]>([]);
   const [projects, setProjects] = useState<Projects[]>([]);
   const [loading, setLoading] = useState(false);
-  const [findedDocPublications, setFindedDocPublications] = useState<Publication | null>(
-    null
-  );
+  const [findedDocPublications, setFindedDocPublications] =
+    useState<Publication | null>(null);
+  const [findedDocConsultores, setfindedDocConsultores] =
+    useState<Consultores | null>(null);
   const [findedDocProjects, setFindedDocProjects] = useState<Projects | null>(
     null
   );
@@ -64,6 +85,21 @@ export const useDb = ({ dbRoute, id }: UseDbProps) => {
       });
       console.log(docs);
       setPublicaciones(docs);
+      if (id) {
+        getDocumentById();
+      }
+    }
+    if (dbRoute === "consultores") {
+      const docs: Consultores[] = [];
+
+      querySnapshot.forEach((doc) => {
+        docs.push({
+          ...doc.data(),
+          id: doc.id,
+        } as Consultores);
+      });
+      console.log(docs);
+      setConsultores(docs);
       if (id) {
         getDocumentById();
       }
@@ -99,15 +135,23 @@ export const useDb = ({ dbRoute, id }: UseDbProps) => {
       const finded = projects.find((doc) => doc.id === id);
       setFindedDocProjects(finded || null);
     }
+    if (dbRoute === "consultores") {
+      const finded = consultores.find((doc) => doc.id === id);
+      setfindedDocConsultores(finded || null);
+    }
   };
 
   useEffect(() => {
     if (publicaciones.length > 0 && id) {
       getDocumentById();
-    } if (projects.length > 0 && id) {
+    }
+    if (projects.length > 0 && id) {
       getDocumentById();
     }
-  }, [publicaciones,projects, id]);
+    if (consultores.length > 0 && id) {
+      getDocumentById();
+    }
+  }, [publicaciones, projects, consultores, id]);
 
   useEffect(() => {
     fetchDb();
@@ -119,6 +163,8 @@ export const useDb = ({ dbRoute, id }: UseDbProps) => {
     findedDocPublications,
     findedDocProjects,
     projects,
+    consultores,
+    findedDocConsultores,
     setLoading,
     refreshPublications, // Agregamos la función aquí
   };

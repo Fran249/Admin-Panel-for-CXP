@@ -34,7 +34,7 @@ export const Proyectos = () => {
     console.log(" estas en la ruta de proyectos");
   }, []);
   return (
-    <section className="bg-neutral-100 w-full h-screen py-20 flex flex-col justify-center items-center text-black">
+    <section className="bg-neutral-100 w-full h-screen py-40 flex flex-col justify-center items-center text-black">
       {loading ? (
         <LoaderCircle className="text-neutral-800 animate-spin" />
       ) : (
