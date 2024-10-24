@@ -17,17 +17,20 @@ import {
   BoxSelect,
   X,
   Check,
+  BoxSelectIcon,
+  Linkedin,
+  Mail,
 } from "lucide-react";
 import { addDoc, collection } from "firebase/firestore";
 
 import { Toaster, toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { Dialog, Slide, Tooltip } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
+import { Dialog, Tooltip } from "@mui/material";
+
 import { useStorage } from "../../hooks/useStorage";
 import { db } from "../../services/firebase";
+import { useDb } from "../../hooks/useDb";
 
-// Definimos un tipo para nuestro estado formData
 type FormData = {
   area_de_expertise_1: string;
   area_de_expertise_2: string;
@@ -44,15 +47,21 @@ type FormData = {
   titulo_credencial_3: string;
   ubicacion: string;
   industria: string[];
+  descripcion: string;
+  publicaciones_relacionadas: string[];
+  linkedin: string;
+  email: string;
 };
 
 export const NewConsultor = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDialogPublicaciones, setOpenDialogPublicaciones] = useState(false);
   const { imagesFromConsultores } = useStorage({
     consultoresRoute: "/consultores/images",
   });
+  const { publicaciones } = useDb({ dbRoute: "publications" });
 
   const [formData, setFormData] = useState<FormData>({
     area_de_expertise_1: "",
@@ -70,30 +79,43 @@ export const NewConsultor = () => {
     titulo_credencial_2: "",
     titulo_credencial_3: "",
     ubicacion: "",
+    descripcion: "",
+    publicaciones_relacionadas: [],
+    linkedin: '',
+    email: '',
   });
 
   const [isIndustriaOpen, setIsIndustriaOpen] = useState(false);
   const [isIdiomaOpen, setIsIdiomaOpen] = useState(false);
   const [imageId, setImageId] = useState<null | number>(null);
+  const [selectedPublicaciones, setSelectedPublicaciones] = useState<string[]>(
+    []
+  );
 
   const inputClasses =
     "w-full p-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 bg-neutral-200 text-neutral-800";
   const labelClasses = "block text-sm font-medium text-neutral-800 mb-1";
-
-  const Transition = forwardRef(function Transition(
-    props: TransitionProps & {
-      children: React.ReactElement<unknown>;
-    },
-    ref: React.Ref<unknown>
-  ) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  });
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
   const handleOpenDialog = () => {
     setOpenDialog(true);
+  };
+  const handleOpenDialogRelatedPublicaciones = () => {
+    setOpenDialogPublicaciones(true);
+  };
+  const handleCloseDialogRelatedPublicaciones = () => {
+    setOpenDialogPublicaciones(false);
+  };
+  const handleSelectPublicacion = (id: string) => {
+    const checkId = selectedPublicaciones.find((item) => item === id);
+    if (checkId) {
+      toast.error("Ya está seleccionado");
+    } else {
+      setSelectedPublicaciones((prev) => [...prev, id]);
+      toast.success("Agregado correctamente");
+    }
   };
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -126,8 +148,11 @@ export const NewConsultor = () => {
     setLoading(true);
     try {
       const publicationsCollection = collection(db, "consultores");
-
-      await addDoc(publicationsCollection, formData);
+      const fullDoc = {
+        ...formData,
+        publicaciones_relacionadas: selectedPublicaciones,
+      };
+      await addDoc(publicationsCollection, fullDoc);
       setLoading(false);
       setTimeout(() => {
         navigate("/dashboard/consultores"); // Navega hacia la ruta deseada
@@ -153,10 +178,7 @@ export const NewConsultor = () => {
     { value: "Minería", label: "Minería" },
     { value: "Renovables", label: "Renovables" },
   ];
-  const stackVariants = {
-    hidden: { opacity: 0, x: 20 },
-    visible: { opacity: 1, x: 0 },
-  };
+
   const handleMouseOver = (id: number) => {
     setImageId(id);
   };
@@ -430,6 +452,40 @@ export const NewConsultor = () => {
                 ""
               )}
             </div>
+            {/*Publicaciones relacionadas*/}
+            <div className="col-span-2 flex justify-start items-center gap-2">
+              <FromDevzButton
+                text="Relacionar publicaciones"
+                click={handleOpenDialogRelatedPublicaciones}
+                submitType={false}
+              >
+                <FileText />
+              </FromDevzButton>
+              {selectedPublicaciones.length > 0 ? (
+                <Check className="text-neutral-800 " />
+              ) : (
+                ""
+              )}
+            </div>
+            {/*Texto descriptivo*/}
+            <div className="col-span-2">
+              <label htmlFor="descripcion" className={labelClasses}>
+                Texto descriptivo
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FileText className="h-5 w-5 text-neutral-500" />
+                </div>
+                <textarea
+                  name="descripcion"
+                  id="descripcion"
+                  className={`${inputClasses} pl-10`}
+                  placeholder="Ingrese la descripcion"
+                  value={formData.descripcion}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
             {/*Industrias*/}
             <div>
               <label htmlFor="servicios_relacionados" className={labelClasses}>
@@ -530,7 +586,48 @@ export const NewConsultor = () => {
                 )}
               </div>
             </div>
+            {/*Linkedin */}
+            <div>
+              <label htmlFor="linkedin" className={labelClasses}>
+                Linkedin
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Linkedin className="h-5 w-5 text-neutral-500" />
+                </div>
+                <input
+                  type="text"
+                  name="linkedin"
+                  id="linkedin"
+                  className={`${inputClasses} pl-10`}
+                  placeholder="Ingrese el link hacia Linkedin"
+                  value={formData.linkedin}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+            {/*Email */}
+            <div>
+              <label htmlFor="email" className={labelClasses}>
+                Email
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-neutral-500" />
+                </div>
+                <input
+                  type="text"
+                  name="email"
+                  id="email"
+                  className={`${inputClasses} pl-10`}
+                  placeholder="Ingrese el E-mail"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
           </div>
+          {/*Publicar consultor*/}
           <div className="w-full justify-center items-center flex">
             <FromDevzButton
               text={`${loading ? "" : "Publicar consultor"}`}
@@ -541,7 +638,7 @@ export const NewConsultor = () => {
           </div>
         </form>
       </motion.div>
-
+      {/*Dialog imagenes*/}
       <Dialog open={openDialog} fullScreen sx={{ backgroundColor: "#f5f5f5" }}>
         <section className="w-full h-full bg-neutral-200">
           <nav className="relative w-full h-20 flex justify-start items-center px-10 bg-neutral-200">
@@ -596,6 +693,59 @@ export const NewConsultor = () => {
             ) : (
               ""
             )}
+          </div>
+        </section>
+      </Dialog>
+      {/*Dialog publicaciones relacionadas*/}
+      <Dialog
+        open={openDialogPublicaciones}
+        fullScreen
+        sx={{ backgroundColor: "#f5f5f5" }}
+      >
+        <section className="w-full h-full bg-neutral-200">
+          <nav className="relative w-full h-20 flex justify-start items-center px-10 bg-neutral-200">
+            <h3 className="font-semibold text-xl">
+              Relacione las publicaciones al consultor
+            </h3>
+            <Tooltip title="Cerrar" className="absolute top-5 right-5">
+              <button
+                onClick={handleCloseDialogRelatedPublicaciones}
+                className="flex justify-center items-center p-1 bg-neutral-200 rounded-full hover:bg-neutral-900 hover:text-neutral-100 text-neutral-900 duration-300"
+              >
+                <X />
+              </button>
+            </Tooltip>
+          </nav>
+          <div className="w-full min-h-80 flex justify-center items-center gap-10 bg-neutral-200">
+            {publicaciones &&
+              publicaciones.map((item, index) => (
+                <div
+                  className="flex flex-col justify-center items-center gap-2"
+                  key={index}
+                >
+                  <div className="relative w-60 h-60 rounded-lg border-[.5px] border-neutral-800 flex flex-col justify-center items-center gap-10 px-5">
+                    {selectedPublicaciones.includes(item.id) && (
+                      <Check className="text-neutral-800 absolute top-2 right-2" />
+                    )}
+                    <h3>{item.titulo_publicacion}</h3>
+                    <FromDevzButton
+                      text="Seleccionar publicación"
+                      click={() => handleSelectPublicacion(item.id)}
+                    >
+                      <BoxSelect />
+                    </FromDevzButton>
+                  </div>
+                </div>
+              ))}
+          </div>
+
+          <div className="w-full flex justify-center items-center">
+            <FromDevzButton
+              text="Hecho"
+              click={handleCloseDialogRelatedPublicaciones}
+            >
+              <Check />
+            </FromDevzButton>
           </div>
         </section>
       </Dialog>

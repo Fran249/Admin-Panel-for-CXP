@@ -36,6 +36,7 @@ interface Consultores {
   industria: string[];
   id: string;
   idiomas: string[];
+  descripcion: string;
   area_de_expertise_2: string;
   avatar_image: string;
   especialidad_1: string;
@@ -51,6 +52,9 @@ interface Consultores {
   titulo_credencial_2: string;
   titulo_credencial_3: string;
   ubicacion: string;
+  publicaciones_relacionadas: string[];
+  linkedin: string;
+  email: string;
 }
 
 interface UseDbProps {
