@@ -27,11 +27,10 @@ export const NewImagen = () => {
       toast.success(
         "Imagenes cargadas exitosamente! dirigiendo a la vista de Imagenes..."
       );
-      
+
       setTimeout(() => {
         navigate("/dashboard/imagenes");
       }, 3000);
-      
     } catch (error) {
       toast.error(`Ha ocurrido un error. ${error}`);
     } finally {
@@ -119,8 +118,22 @@ export const NewImagen = () => {
                     onChange={handleRutaChange}
                     className={inputClasses}
                   />
-                  <label htmlFor="ruta-publicaciones" className={labelClasses}>
+                  <label htmlFor="ruta-consultores" className={labelClasses}>
                     Publicaciones
+                  </label>
+                </div>
+                <div className="flex justify-center items-center gap-2">
+                  <input
+                    type="checkbox"
+                    name="ruta"
+                    id="ruta-consultores"
+                    value="consultores/images/"
+                    checked={rutaSeleccionada === "consultores/images/"}
+                    onChange={handleRutaChange}
+                    className={inputClasses}
+                  />
+                  <label htmlFor="ruta-consultores" className={labelClasses}>
+                    Consultores
                   </label>
                 </div>
               </div>

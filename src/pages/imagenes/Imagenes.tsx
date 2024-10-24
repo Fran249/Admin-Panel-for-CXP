@@ -9,10 +9,11 @@ import { storage } from "../../services/firebase";
 import { deleteObject, ref } from "firebase/storage";
 import { toast, Toaster } from "sonner";
 export const Imagenes = () => {
-  const { loading, imagesFromPublications, imagesFromProjects, Refresh } =
+  const { loading, imagesFromPublications, imagesFromProjects,imagesFromConsultores, Refresh } =
     useStorage({
       projectsRoute: "/projects/images",
       publicationsRoute: "/publications/images",
+      consultoresRoute: "/consultores/images",
     });
 
   const handleButtonClick = async (item: string) => {
@@ -47,6 +48,7 @@ export const Imagenes = () => {
               tableTitle="Imagenes"
               items1={imagesFromPublications}
               items2={imagesFromProjects}
+              items3={imagesFromConsultores}
               handleButtonClick={handleButtonClick}
               imageFormatter={true}
               documentFormatter={false}

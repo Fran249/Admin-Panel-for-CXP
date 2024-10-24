@@ -13,6 +13,7 @@ type Props = {
   items?: any[];
   items1?: any[];
   items2?: any[];
+  items3?: any[];
   files?: any[];
   handleButtonClick: (pub: any) => void;
   imageFormatter?: boolean;
@@ -26,6 +27,7 @@ export const Table = ({
   items = [],
   items1,
   items2,
+  items3,
   files,
   handleButtonClick,
   imageFormatter,
@@ -61,6 +63,7 @@ export const Table = ({
   const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
   const currentItems1 = items1?.slice(indexOfFirstItem, indexOfLastItem);
   const currentItems2 = items2?.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems3 = items3?.slice(indexOfFirstItem, indexOfLastItem);
   const currentFiles = files?.slice(indexOfFirstItem, indexOfLastItem);
   const nextPage = () => {
     if (currentPage < Math.ceil(items.length / itemsPerPage)) {
@@ -185,6 +188,7 @@ export const Table = ({
 
       {imageFormatter && (
         <>
+           {/*Publicaciones*/}
           <div className="flex justify-start items-center">
             <h3 className="text-xl font-semibold my-10 rounded-lg border-[.5px] border-neutral-800 px-2 py-1 bg-neutral-800 text-neutral-200">
               Publicaciones
@@ -207,7 +211,7 @@ export const Table = ({
 
                 <div
                   className={`transition-opacity duration-300 bg-[#000000b6] w-full h-full absolute top-0 right-0 rounded-xl flex justify-center items-center flex-col gap-10 ${
-                    imageId === item ? "opacity-100" : "opacity-10"
+                    imageId === item ? "opacity-100" : "opacity-0"
                   }`}
                 >
                   <FromDevzButtonWithTooltip
@@ -223,6 +227,7 @@ export const Table = ({
           <div className="my-10">
             <Divider></Divider>
           </div>
+           {/*Proyectos*/}
           <div className="flex justify-start items-center">
             <h3 className="text-xl font-semibold my-10 rounded-lg border-[.5px] border-neutral-800 px-2 py-1 bg-neutral-800 text-neutral-200">
               Proyectos
@@ -245,7 +250,46 @@ export const Table = ({
 
                 <div
                   className={`transition-opacity duration-300 bg-[#000000b6] w-full h-full absolute top-0 right-0 rounded-xl flex justify-center items-center flex-col gap-10 ${
-                    imageId === item ? "opacity-100" : "opacity-10"
+                    imageId === item ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  <FromDevzButtonWithTooltip
+                    text="Eliminar"
+                    click={() => handleButtonClick(item)}
+                  >
+                    <Trash size={20} />
+                  </FromDevzButtonWithTooltip>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          <div className="my-10">
+            <Divider></Divider>
+          </div>
+          {/*Consultores*/}
+          <div className="flex justify-start items-center">
+            <h3 className="text-xl font-semibold my-10 rounded-lg border-[.5px] border-neutral-800 px-2 py-1 bg-neutral-800 text-neutral-200">
+              Consultores
+            </h3>
+          </div>
+          <div className="w-full h-[calc(100%-80px)] flex justify-center items-center flex-wrap gap-10">
+            {currentItems3?.map((item, index) => (
+              <motion.div
+                key={index}
+                onMouseOver={() => handleMouseOver(item)}
+                onMouseLeave={() => setImageId(null)}
+                className="relative rounded-xl w-44 h-44 hover:shadow-xl hover:shadow-neutral-900 cursor-pointer transition-shadow duration-200"
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                transition={{ duration: 0.5, delay: index / 10 }}
+                variants={stackVariants}
+              >
+                <img className="rounded-xl w-44 h-44" src={item} alt="" />
+
+                <div
+                  className={`transition-opacity duration-300 bg-[#000000b6] w-full h-full absolute top-0 right-0 rounded-xl flex justify-center items-center flex-col gap-10 ${
+                    imageId === item ? "opacity-100" : "opacity-0"
                   }`}
                 >
                   <FromDevzButtonWithTooltip

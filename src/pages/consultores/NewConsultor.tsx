@@ -2,7 +2,7 @@ import {
   FromDevzButton,
   FromDevzButtonWithTooltip,
 } from "../../components/button/FromDevzButton";
-import { forwardRef, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   User,
@@ -17,7 +17,6 @@ import {
   BoxSelect,
   X,
   Check,
-  BoxSelectIcon,
   Linkedin,
   Mail,
 } from "lucide-react";
