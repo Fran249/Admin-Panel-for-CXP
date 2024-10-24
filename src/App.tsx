@@ -17,6 +17,7 @@ import { EditProyecto } from "./pages/proyectos/EditProyecto";
 import { NewImagen } from "./pages/imagenes/NewImagen";
 import { NewArchivo } from "./pages/archivos/NewArchivo";
 import { NewConsultor } from "./pages/consultores/NewConsultor";
+import { EditConsultores } from "./pages/consultores/EditConsultores";
 
 
 function App() {
@@ -45,7 +46,7 @@ function App() {
             <Route path="archivos/upload" element={<NewArchivo />} />
             <Route path="consultores" element={<Consultores />} />
             <Route path="consultores/upload" element={<NewConsultor />} />
-            <Route path="consultores/edit/:id" element={<NewConsultor />} />
+            <Route path="consultores/edit/:id" element={<EditConsultores />} />
           </Route>
         </Routes>
       </UserProvider>

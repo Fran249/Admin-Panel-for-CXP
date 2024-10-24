@@ -33,7 +33,9 @@ interface Projects {
 }
 interface Consultores {
   area_de_expertise_1: string;
+  industria: string[];
   id: string;
+  idiomas: string[];
   area_de_expertise_2: string;
   avatar_image: string;
   especialidad_1: string;
