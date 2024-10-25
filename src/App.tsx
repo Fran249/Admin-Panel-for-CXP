@@ -18,6 +18,9 @@ import { NewImagen } from "./pages/imagenes/NewImagen";
 import { NewArchivo } from "./pages/archivos/NewArchivo";
 import { NewConsultor } from "./pages/consultores/NewConsultor";
 import { EditConsultores } from "./pages/consultores/EditConsultores";
+import { Servicios } from "./pages/servicios/Servicios";
+import { NewServicio } from "./pages/servicios/NewServicio";
+import { EditServicio } from "./pages/servicios/EditServicio";
 
 
 function App() {
@@ -47,6 +50,9 @@ function App() {
             <Route path="consultores" element={<Consultores />} />
             <Route path="consultores/upload" element={<NewConsultor />} />
             <Route path="consultores/edit/:id" element={<EditConsultores />} />
+            <Route path="servicios" element={<Servicios />} />
+            <Route path="servicios/upload" element={<NewServicio />} />
+            <Route path="servicios/edit/:id" element={<EditServicio />} />
           </Route>
         </Routes>
       </UserProvider>

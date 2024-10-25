@@ -17,6 +17,7 @@ import {
   X,
   UserPlus,
   Users,
+  Package,
 } from "lucide-react";
 import { appWindow } from "@tauri-apps/api/window";
 import { signOut } from "firebase/auth";
@@ -54,6 +55,11 @@ const NavBar = () => {
       name: "Consultores",
       icon: <Users />,
     },
+    {
+      route: "servicios",
+      name: "Servicios",
+      icon: <Package />, // Usuarios con un "+" para agregar consultores
+    },
   ];
   const cargarArray = [
     {
@@ -80,6 +86,11 @@ const NavBar = () => {
       route: "consultores/upload",
       name: "Consultores",
       icon: <UserPlus />, // Usuarios con un "+" para agregar consultores
+    },
+    {
+      route: "servicios/upload",
+      name: "Servicios",
+      icon: <Package />, // Usuarios con un "+" para agregar consultores
     },
   ];
   const [showVistas, setShowVistas] = useState(false);
