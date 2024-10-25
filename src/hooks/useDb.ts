@@ -66,6 +66,7 @@ export const useDb = ({ dbRoute, id }: UseDbProps) => {
   const [publicaciones, setPublicaciones] = useState<Publication[]>([]);
   const [consultores, setConsultores] = useState<Consultores[]>([]);
   const [projects, setProjects] = useState<Projects[]>([]);
+  const [services, setServices] = useState([])
   const [loading, setLoading] = useState(false);
   const [findedDocPublications, setFindedDocPublications] =
     useState<Publication | null>(null);
