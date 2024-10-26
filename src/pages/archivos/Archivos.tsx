@@ -11,8 +11,9 @@ import { toast, Toaster } from "sonner";
 import { storage } from "../../services/firebase";
 import { truncateText } from "../../utils/truncateText";
 export const Archivos = () => {
-  const { filesFromPublications, Refresh, loading } = useStorage({
-    filesRoute: "publications/files",
+  const { filesFromPublications, filesFromServices, Refresh, loading } = useStorage({
+    filesFromPublicationsRoute: "publications/files",
+    filesFromServicesRoute: "services/files",
   });
 
   const handleButtonClick = async (item: any) => {
@@ -33,7 +34,10 @@ export const Archivos = () => {
     if (filesFromPublications.length > 0) {
       console.log(filesFromPublications);
     }
-  }, [filesFromPublications]);
+    if (filesFromServices.length > 0) {
+      console.log(filesFromServices);
+    }
+  }, [filesFromPublications, filesFromServices]);
   return (
     <section className="bg-neutral-100 w-full min-h-screen flex flex-col justify-center items-center py-40 text-black">
       {loading ? (

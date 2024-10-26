@@ -10,7 +10,7 @@ import { toast, Toaster } from "sonner";
 import { db } from "../../services/firebase";
 
 export const Servicios = () => {
-    const { projects, loading , setLoading, refreshPublications} = useDb({ dbRoute: "projects" });
+    const { services, loading , setLoading, refreshPublications} = useDb({ dbRoute: "services" });
     const handleButtonClick = async (pub: any) => {
       console.log("Documento a eliminar:", pub);
       setLoading(true);
@@ -29,7 +29,7 @@ export const Servicios = () => {
     };
 
     useEffect(() => {
-        console.log(" estas en la ruta de proyectos");
+        console.log(" estas en la ruta de servicios");
       }, []);
   return (
     <section className="bg-neutral-100 w-full h-screen py-40 flex flex-col justify-center items-center text-black">
@@ -45,8 +45,8 @@ export const Servicios = () => {
 
         <div className="w-[calc(100%-240px)] h-full p-5">
           <Table
-            tableTitle="Proyecto"
-            items={projects}
+            tableTitle="Servicio"
+            items={services}
             handleButtonClick={handleButtonClick}
             imageFormatter={false}
             documentFormatter={true}

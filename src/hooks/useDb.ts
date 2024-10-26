@@ -1,62 +1,10 @@
 import { useEffect, useState } from "react";
 import { db } from "../services/firebase";
 import { collection, query, getDocs } from "firebase/firestore";
-
-interface Publication {
-  titulo_publicacion: string;
-  id: string;
-  abstract: string;
-  archivo: string;
-  autor_publicacion: string;
-  coautores: string[];
-  fecha_publicacion: string;
-  imagenes: string[];
-  industria_asociada: string[];
-  keywords: string[];
-  lugar_publicacion: string;
-  more_authors: boolean;
-  servicios_relacionados: string[];
-}
-
-interface Projects {
-  imagenes: string[] | [];
-  id: string;
-  nombre_proyecto: string;
-  texto_1: string;
-  texto_2: string;
-  tipo_de_recurso: string;
-  industria_asociada: string[];
-  ubicacion_localidad: string;
-  ubicacion_pais: string;
-  latitude: string;
-  longitude: string;
-}
-interface Consultores {
-  area_de_expertise_1: string;
-  industria: string[];
-  id: string;
-  idiomas: string[];
-  descripcion: string;
-  area_de_expertise_2: string;
-  avatar_image: string;
-  especialidad_1: string;
-  especialidad_2: string;
-  especialidad_3: string;
-  especialidad_4: string;
-  especialidad_5: string;
-  idiomas_1: string;
-  idiomas_2: string;
-  idiomas_3: string;
-  nombre_completo: string;
-  titulo_credencial_1: string;
-  titulo_credencial_2: string;
-  titulo_credencial_3: string;
-  ubicacion: string;
-  publicaciones_relacionadas: string[];
-  linkedin: string;
-  email: string;
-}
-
+import { Publication } from './../components/types/PublicationType';
+import { Consultores } from './../components/types/ConsultorType';
+import { Projects } from './../components/types/ProjectType';
+import { Services } from './../components/types/ServiceType';
 interface UseDbProps {
   dbRoute: string;
   id?: string;
@@ -66,12 +14,14 @@ export const useDb = ({ dbRoute, id }: UseDbProps) => {
   const [publicaciones, setPublicaciones] = useState<Publication[]>([]);
   const [consultores, setConsultores] = useState<Consultores[]>([]);
   const [projects, setProjects] = useState<Projects[]>([]);
-  const [services, setServices] = useState([])
+  const [services, setServices] = useState<Services[]>([]);
   const [loading, setLoading] = useState(false);
   const [findedDocPublications, setFindedDocPublications] =
     useState<Publication | null>(null);
   const [findedDocConsultores, setfindedDocConsultores] =
     useState<Consultores | null>(null);
+    const [findedDocServices, setFindedDocServices] =
+    useState<Services | null>(null);
   const [findedDocProjects, setFindedDocProjects] = useState<Projects | null>(
     null
   );
@@ -92,6 +42,21 @@ export const useDb = ({ dbRoute, id }: UseDbProps) => {
       });
       console.log(docs);
       setPublicaciones(docs);
+      if (id) {
+        getDocumentById();
+      }
+    }
+    if (dbRoute === "services") {
+      const docs: Services[] = [];
+
+      querySnapshot.forEach((doc) => {
+        docs.push({
+          ...doc.data(),
+          id: doc.id,
+        } as Services);
+      });
+      console.log(docs);
+      setServices(docs);
       if (id) {
         getDocumentById();
       }
@@ -142,6 +107,10 @@ export const useDb = ({ dbRoute, id }: UseDbProps) => {
       const finded = projects.find((doc) => doc.id === id);
       setFindedDocProjects(finded || null);
     }
+    if (dbRoute === "services") {
+      const finded = services.find((doc) => doc.id === id);
+      setFindedDocServices(finded || null);
+    }
     if (dbRoute === "consultores") {
       const finded = consultores.find((doc) => doc.id === id);
       setfindedDocConsultores(finded || null);
@@ -158,7 +127,10 @@ export const useDb = ({ dbRoute, id }: UseDbProps) => {
     if (consultores.length > 0 && id) {
       getDocumentById();
     }
-  }, [publicaciones, projects, consultores, id]);
+    if (services.length > 0 && id) {
+      getDocumentById();
+    }
+  }, [publicaciones, projects, consultores,services, id]);
 
   useEffect(() => {
     fetchDb();
@@ -167,8 +139,10 @@ export const useDb = ({ dbRoute, id }: UseDbProps) => {
   return {
     publicaciones,
     loading,
+    services,
     findedDocPublications,
     findedDocProjects,
+    findedDocServices,
     projects,
     consultores,
     findedDocConsultores,

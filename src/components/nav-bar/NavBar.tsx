@@ -167,7 +167,8 @@ const NavBar = () => {
               location.pathname === "/dashboard/proyectos/upload" ||
               location.pathname === "/dashboard/consultores/upload" ||
               location.pathname === "/dashboard/imagenes/upload" ||
-              location.pathname === "/dashboard/archivos/upload"
+              location.pathname === "/dashboard/archivos/upload" ||
+              location.pathname === "/dashboard/servicios/upload" 
                 ? location.pathname
                     .split("/")
                     .reverse()

@@ -19,7 +19,6 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { Toaster, toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-// Definimos un tipo para nuestro estado formData
 type FormData = {
   abstract: string;
   archivo: File | null;

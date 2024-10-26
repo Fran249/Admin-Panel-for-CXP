@@ -124,6 +124,34 @@ export const NewArchivo = () => {
                     Publicaciones
                   </label>
                 </div>
+                <div className="flex justify-center items-center gap-2">
+                  <input
+                    type="checkbox"
+                    name="ruta"
+                    id="ruta-publicaciones"
+                    value="/consultores/files/"
+                    checked={rutaSeleccionada === "/consultores/files/"}
+                    onChange={handleRutaChange}
+                    className={inputClasses}
+                  />
+                  <label htmlFor="ruta-publicaciones" className={labelClasses}>
+                    Consultores
+                  </label>
+                </div>
+                <div className="flex justify-center items-center gap-2">
+                  <input
+                    type="checkbox"
+                    name="ruta"
+                    id="ruta-publicaciones"
+                    value="/services/files/"
+                    checked={rutaSeleccionada === "/services/files/"}
+                    onChange={handleRutaChange}
+                    className={inputClasses}
+                  />
+                  <label htmlFor="ruta-publicaciones" className={labelClasses}>
+                    Servicios
+                  </label>
+                </div>
               </div>
             </div>
           )}

@@ -14,6 +14,7 @@ type Props = {
   items1?: any[];
   items2?: any[];
   items3?: any[];
+  items4?: any[];
   files?: any[];
   handleButtonClick: (pub: any) => void;
   imageFormatter?: boolean;
@@ -28,6 +29,7 @@ export const Table = ({
   items1,
   items2,
   items3,
+  items4,
   files,
   handleButtonClick,
   imageFormatter,
@@ -64,6 +66,7 @@ export const Table = ({
   const currentItems1 = items1?.slice(indexOfFirstItem, indexOfLastItem);
   const currentItems2 = items2?.slice(indexOfFirstItem, indexOfLastItem);
   const currentItems3 = items3?.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems4 = items4?.slice(indexOfFirstItem, indexOfLastItem);
   const currentFiles = files?.slice(indexOfFirstItem, indexOfLastItem);
   const nextPage = () => {
     if (currentPage < Math.ceil(items.length / itemsPerPage)) {
@@ -98,9 +101,11 @@ export const Table = ({
                 <th className="px-6 py-3 text-left text-sm font-semibold text-neutral-800 tracking-wider">
                   {tableTitle}
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-neutral-800 tracking-wider">
-                  Fecha
-                </th>
+                {tableTitle !== "Servicio" && (
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-neutral-800 tracking-wider">
+                    Fecha
+                  </th>
+                )}
                 <th className="px-6 py-3 text-left text-sm font-semibold text-neutral-800 tracking-wider">
                   Acciones
                 </th>
@@ -110,11 +115,15 @@ export const Table = ({
               {currentItems.map((pub) => (
                 <tr key={pub.id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-800">
-                    {pub.titulo_publicacion || pub.nombre_proyecto}
+                    {pub.titulo_publicacion ||
+                      pub.nombre_proyecto ||
+                      pub.nombre_servicio}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-800">
-                    {pub.fecha_publicacion}
-                  </td>
+                  {tableTitle !== "Servicio" && (
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-800">
+                      {pub.fecha_publicacion}
+                    </td>
+                  )}
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-800 flex gap-2">
                     <Link to={`edit/${pub.id}`}>
                       <FromDevzButton text="Editar">
@@ -188,7 +197,7 @@ export const Table = ({
 
       {imageFormatter && (
         <>
-           {/*Publicaciones*/}
+          {/*Publicaciones*/}
           <div className="flex justify-start items-center">
             <h3 className="text-xl font-semibold my-10 rounded-lg border-[.5px] border-neutral-800 px-2 py-1 bg-neutral-800 text-neutral-200">
               Publicaciones
@@ -227,7 +236,7 @@ export const Table = ({
           <div className="my-10">
             <Divider></Divider>
           </div>
-           {/*Proyectos*/}
+          {/*Proyectos*/}
           <div className="flex justify-start items-center">
             <h3 className="text-xl font-semibold my-10 rounded-lg border-[.5px] border-neutral-800 px-2 py-1 bg-neutral-800 text-neutral-200">
               Proyectos
@@ -274,6 +283,42 @@ export const Table = ({
           </div>
           <div className="w-full h-[calc(100%-80px)] flex justify-center items-center flex-wrap gap-10">
             {currentItems3?.map((item, index) => (
+              <motion.div
+                key={index}
+                onMouseOver={() => handleMouseOver(item)}
+                onMouseLeave={() => setImageId(null)}
+                className="relative rounded-xl w-44 h-44 hover:shadow-xl hover:shadow-neutral-900 cursor-pointer transition-shadow duration-200"
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                transition={{ duration: 0.5, delay: index / 10 }}
+                variants={stackVariants}
+              >
+                <img className="rounded-xl w-44 h-44" src={item} alt="" />
+
+                <div
+                  className={`transition-opacity duration-300 bg-[#000000b6] w-full h-full absolute top-0 right-0 rounded-xl flex justify-center items-center flex-col gap-10 ${
+                    imageId === item ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  <FromDevzButtonWithTooltip
+                    text="Eliminar"
+                    click={() => handleButtonClick(item)}
+                  >
+                    <Trash size={20} />
+                  </FromDevzButtonWithTooltip>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          {/*Servicios*/}
+          <div className="flex justify-start items-center">
+            <h3 className="text-xl font-semibold my-10 rounded-lg border-[.5px] border-neutral-800 px-2 py-1 bg-neutral-800 text-neutral-200">
+              Servicios
+            </h3>
+          </div>
+          <div className="w-full h-[calc(100%-80px)] flex justify-center items-center flex-wrap gap-10">
+            {currentItems4?.map((item, index) => (
               <motion.div
                 key={index}
                 onMouseOver={() => handleMouseOver(item)}

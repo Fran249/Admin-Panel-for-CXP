@@ -132,8 +132,22 @@ export const NewImagen = () => {
                     onChange={handleRutaChange}
                     className={inputClasses}
                   />
-                  <label htmlFor="ruta-consultores" className={labelClasses}>
+                  <label htmlFor="ruta-servicios" className={labelClasses}>
                     Consultores
+                  </label>
+                </div>
+                <div className="flex justify-center items-center gap-2">
+                  <input
+                    type="checkbox"
+                    name="ruta"
+                    id="ruta-servicios"
+                    value="services/images/"
+                    checked={rutaSeleccionada === "services/images/"}
+                    onChange={handleRutaChange}
+                    className={inputClasses}
+                  />
+                  <label htmlFor="ruta-servicios" className={labelClasses}>
+                    Servicios
                   </label>
                 </div>
               </div>
