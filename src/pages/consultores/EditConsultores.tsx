@@ -167,6 +167,27 @@ export const EditConsultores = () => {
       setTimeout(() => {
         navigate("/dashboard/consultores");
       }, 3000);
+      setFormData({
+        area_de_expertise_1: "",
+        area_de_expertise_2: "",
+        avatar_image: "",
+        industria: [],
+        idiomas: [],
+        especialidad_1: "",
+        especialidad_2: "",
+        especialidad_3: "",
+        especialidad_4: "",
+        especialidad_5: "",
+        nombre_completo: "",
+        titulo_credencial_1: "",
+        titulo_credencial_2: "",
+        titulo_credencial_3: "",
+        ubicacion: "",
+        descripcion: "",
+        publicaciones_relacionadas: [],
+        linkedin: '',
+        email: '',
+      })
       setLoading(false);
       toast.success(
         "Documento actualizado con exito! Dirigiendo a la vista de Consultores..."

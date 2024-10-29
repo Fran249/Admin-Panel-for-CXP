@@ -1,15 +1,29 @@
 import { db, storage } from "../../services/firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { FileText, Image, LoaderCircle, Tag, Upload } from "lucide-react";
+import {
+  BoxSelect,
+  Check,
+  FileText,
+  Image,
+  LoaderCircle,
+  Tag,
+  Upload,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 import { toast, Toaster } from "sonner";
 import { motion } from "framer-motion";
-import { FromDevzButton } from "../../components/button/FromDevzButton";
+import {
+  FromDevzButton,
+  FromDevzButtonWithTooltip,
+} from "../../components/button/FromDevzButton";
 import { useNavigate } from "react-router-dom";
+import { useStorage } from "../../hooks/useStorage";
+import { Dialog, Tooltip } from "@mui/material";
 
 interface FormData {
-  imagenes: File[] | [];
+  imagenes: string[];
   nombre_proyecto: string;
   texto_1: string;
   texto_2: string;
@@ -25,8 +39,11 @@ export const NewProyecto = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [isIndustriaOpen, setIsIndustriaOpen] = useState(false);
-  const [hasImage, setHasImage] = useState(false);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [openDialogImagenes, setOpenDialogImagenes] = useState(false);
+  const [imageId, setImageId] = useState<null | number>(null);
+  const { imagesFromProjects } = useStorage({
+    projectsRoute: "/projects/images",
+  });
   const [formData, setFormData] = useState<FormData>({
     imagenes: [],
     nombre_proyecto: "",
@@ -43,9 +60,22 @@ export const NewProyecto = () => {
     "w-full p-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 bg-neutral-200 text-neutral-800";
   const labelClasses = "block text-sm font-medium text-neutral-800 mb-1";
 
-  const handleHasImage = () => {
-    setHasImage(!hasImage);
+  const handleSelectImage = (id: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      imagenes: [...prev.imagenes, id],
+    }));
   };
+  const handleMouseOver = (id: number) => {
+    setImageId(id);
+  };
+  const handleDeselectImage = (id: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      imagenes: prev.imagenes.filter((imageId) => imageId !== id),
+    }));
+  };
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -64,27 +94,6 @@ export const NewProyecto = () => {
       }));
     };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, files } = e.target;
-    if (files) {
-
-      const fileArray = Array.from(files);
-      const previewArray = fileArray.map((file) => URL.createObjectURL(file));
-      setPreviewUrls(previewArray);
-
-      setFormData((prev) => ({
-        ...prev,
-        [name]: Array.isArray(prev[name as keyof typeof prev]) 
-          ? [
-              ...(prev[name as keyof typeof prev] as File[]),
-              ...Array.from(files),
-            ] 
-          : Array.from(files), 
-      }));
-    }
-    console.log(files, name);
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(formData);
@@ -93,27 +102,10 @@ export const NewProyecto = () => {
     try {
       const projectsCollection = collection(db, "projects");
 
-      // Cargar las imágenes en Firebase Storage (si es un array)
-      let imageUrls: string[] = [];
-
-      if (hasImage && formData.imagenes.length > 0) {
-        const uploadPromises = formData.imagenes.map(async (imagen: File) => {
-          const storageRef = ref(storage, `projects/images/${imagen.name}`);
-          await uploadBytes(storageRef, imagen);
-          return getDownloadURL(storageRef); // Devuelve la URL de la imagen
-        });
-
-        imageUrls = await Promise.all(uploadPromises); // Espera a que se completen todas las subidas
-      }
-
-      // Actualizar formData con las URLs de las imágenes
-      const updatedFormData = {
-        ...formData,
-        imagenes: hasImage ? imageUrls : [], // Si hasImage es true, guarda las URLs, si no, un array vacío
-      };
+ 
       // Agregar el documento a Firestore
-      await addDoc(projectsCollection, updatedFormData);
-      console.log(updatedFormData);
+      await addDoc(projectsCollection, formData);
+    
       setLoading(false);
 
       setFormData({
@@ -150,9 +142,7 @@ export const NewProyecto = () => {
 
   return (
     <section className="w-full min-h-screen py-20 bg-neutral-100 flex flex-col justify-center items-center">
-      {loading ? (
-        <LoaderCircle className="text-neutral-800 animate-spin" />
-      ) : (
+
         <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -286,71 +276,19 @@ export const NewProyecto = () => {
                   )}
                 </div>
               </div>
-              {/*Tiene imagen ?*/}
-              <div className="col-span-2 flex justify-center items-center gap-2">
-                <label>Imagenes</label>
-                <input
-                  placeholder="Imagen"
-                  type="checkbox"
-                  checked={hasImage}
-                  onChange={handleHasImage}
-                />
+              {/*Imagen*/}
+              <div className="w-full flex justify-start items-center gap-10 col-span-2">
+                <div className="flex gap-2 items-center">
+                  <FromDevzButton
+                    text="Imagenes"
+                    click={() => setOpenDialogImagenes(true)}
+                  >
+                    <Image />
+                  </FromDevzButton>
+                  {formData.imagenes.length > 0 && <Check />}
+                </div>
               </div>
-              {/*Imagenes*/}
-              {hasImage && (
-                <motion.div
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="col-span-2 flex justify-center items-center"
-                >
-                  <div className="">
-                    <label htmlFor="imagenes" className={labelClasses}>
-                      Imagenes
-                    </label>
-                    {previewUrls && (
-                      <div className="flex justify-center items-center">
-                        {previewUrls.length <= 3 ? (
-                          previewUrls.map((url, index) => (
-                            <img
-                              key={index}
-                              src={url}
-                              alt="Preview"
-                              className="mt-2 rounded-lg w-32 h-32"
-                            />
-                          ))
-                        ) : (
-                          <>
-                            {previewUrls.slice(0, 3).map((url, index) => (
-                              <img
-                                key={index}
-                                src={url}
-                                alt="Preview"
-                                className="mt-2 rounded-lg w-32 h-32"
-                              />
-                            ))}
-                            <h3>Y {previewUrls.length - 3} mas..</h3>
-                          </>
-                        )}
-                      </div>
-                    )}
-                    <div className="mt-1 flex items-center">
-                      <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-neutral-200 p-2">
-                        <Image className="h-full w-full text-neutral-500" />
-                      </span>
-                      <input
-                        type="file"
-                        multiple
-                        name="imagenes"
-                        id="imagenes"
-                        accept="image/*"
-                        className="ml-5 bg-neutral-200 py-2 px-3 border border-neutral-300 rounded-md shadow-sm text-sm leading-4 font-medium text-neutral-800 hover:bg-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500"
-                        onChange={handleFileChange}
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-              )}
+
               {/*Ubicacion Localidad*/}
               <div className="">
                 <label htmlFor="ubicacion_localidad" className={labelClasses}>
@@ -433,13 +371,77 @@ export const NewProyecto = () => {
               </div>
             </div>
             <div className="w-full justify-center items-center flex">
-              <FromDevzButton text="Cargar proyecto" submitType={true}>
-                <Upload />
+              <FromDevzButton text={loading ? '' : 'Cargar proyecto'} submitType={true}>
+                {loading ? <LoaderCircle className="text-neutral-800 animate-spin" /> : <Upload /> } 
               </FromDevzButton>
             </div>
           </form>
         </motion.div>
-      )}
+      {/*Dialog Imagenes*/}
+      <Dialog
+        open={openDialogImagenes}
+        fullScreen
+        sx={{ backgroundColor: "#f5f5f5" }}
+      >
+        <section className="w-full h-full bg-neutral-200">
+          <nav className="relative w-full h-20 flex justify-start items-center px-10 bg-neutral-200">
+            <h3 className="font-semibold text-xl">Seleccione imagenes</h3>
+            <Tooltip title="Cerrar" className="absolute top-5 right-5">
+              <button
+                onClick={() => setOpenDialogImagenes(false)}
+                className="flex justify-center items-center p-1 bg-neutral-200 rounded-lg hover:bg-neutral-900 hover:text-neutral-100 text-neutral-900 duration-300"
+              >
+                <X />
+              </button>
+            </Tooltip>
+          </nav>
+          <div className="w-full min-h-80 flex justify-center items-center flex-wrap px-10 gap-10 bg-neutral-200">
+            {imagesFromProjects &&
+              imagesFromProjects.map((item, index) => (
+                <div
+                  key={index}
+                  onMouseOver={() => handleMouseOver(index)}
+                  onMouseLeave={() => setImageId(null)}
+                  className="relative rounded-lg w-44 h-44 hover:shadow-xl hover:shadow-neutral-900 cursor-pointer transition-shadow duration-200"
+                >
+                  <div>
+                    {formData.imagenes.includes(item) && (
+                      <div className="z-20 bg-neutral-200 shadow-lg shadow-neutral-800 border-[.5px] border-neutral-800 w-10 h-10 absolute bottom-0 right-0 flex justify-center items-center rounded-lg">
+                        <Check className="text-neutral-900 " />
+                      </div>
+                    )}
+                    <img className="rounded-lg w-44 h-44" src={item} alt="" />
+                  </div>
+
+                  <div
+                    className={`transition-opacity duration-300 bg-[#000000b6] w-full h-full absolute top-0 right-0 rounded-lg flex justify-center items-center flex-col gap-10 ${
+                      imageId === index ? "opacity-100" : "opacity-0"
+                    }`}
+                  >
+                    <FromDevzButtonWithTooltip
+                      text={
+                        formData.imagenes.includes(item)
+                          ? "Deseleccionar"
+                          : "Seleccionar"
+                      }
+                      click={() =>
+                        formData.imagenes.includes(item)
+                          ? handleDeselectImage(item)
+                          : handleSelectImage(item)
+                      }
+                    >
+                      {formData.imagenes.includes(item) ? (
+                        <X />
+                      ) : (
+                        <BoxSelect size={20} />
+                      )}
+                    </FromDevzButtonWithTooltip>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </section>
+      </Dialog>
       <Toaster />
     </section>
   );

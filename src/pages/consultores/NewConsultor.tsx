@@ -152,6 +152,27 @@ export const NewConsultor = () => {
         publicaciones_relacionadas: selectedPublicaciones,
       };
       await addDoc(publicationsCollection, fullDoc);
+      setFormData({
+        area_de_expertise_1: "",
+        area_de_expertise_2: "",
+        avatar_image: "",
+        industria: [],
+        idiomas: [],
+        especialidad_1: "",
+        especialidad_2: "",
+        especialidad_3: "",
+        especialidad_4: "",
+        especialidad_5: "",
+        nombre_completo: "",
+        titulo_credencial_1: "",
+        titulo_credencial_2: "",
+        titulo_credencial_3: "",
+        ubicacion: "",
+        descripcion: "",
+        publicaciones_relacionadas: [],
+        linkedin: '',
+        email: '',
+      })
       setLoading(false);
       setTimeout(() => {
         navigate("/dashboard/consultores"); // Navega hacia la ruta deseada

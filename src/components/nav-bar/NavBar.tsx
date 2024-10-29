@@ -168,7 +168,7 @@ const NavBar = () => {
               location.pathname === "/dashboard/consultores/upload" ||
               location.pathname === "/dashboard/imagenes/upload" ||
               location.pathname === "/dashboard/archivos/upload" ||
-              location.pathname === "/dashboard/servicios/upload" 
+              location.pathname === "/dashboard/servicios/upload"
                 ? location.pathname
                     .split("/")
                     .reverse()
@@ -181,6 +181,8 @@ const NavBar = () => {
                 ? "Editar proyecto"
                 : location.pathname.startsWith("/dashboard/consultores/edit/")
                 ? "Editar consultor"
+                : location.pathname.startsWith("/dashboard/servicios/edit/")
+                ? "Editar servicio"
                 : location.pathname
                     .replace("dashboard", "")
                     .split("/")
@@ -244,6 +246,7 @@ const NavBar = () => {
                 exit="hidden"
                 transition={{ duration: 0.5, delay: index / 10 }}
                 variants={stackVariants}
+                className=" "
               >
                 <Tooltip title={item.name} key={index}>
                   <div className="flex items-center gap-2">
@@ -263,7 +266,7 @@ const NavBar = () => {
             ))}
         </div>
         <div className="flex justify-center items-center">
-          <Tooltip title="Cerrar sesión" className="mr-10">
+          <Tooltip title="Cerrar sesión" className="mr-5">
             <button onClick={handleLogOut}>
               <LogOutIcon />
             </button>

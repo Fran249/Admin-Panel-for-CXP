@@ -113,6 +113,10 @@ export const NewServicio = () => {
       toast.success("Agregado correctamente");
     }
   };
+  const handleDeselecRelatedConsultores = (item: string) => {
+    setSelectedConsultores((prev) => prev.filter((i) => i !== item));
+    toast.success("Deseleccionado");
+  };
   const handleSelectPublicacion = (id: string) => {
     const checkId = selectedPublicaciones.find((item) => item === id);
     if (checkId) {
@@ -121,6 +125,10 @@ export const NewServicio = () => {
       setSelectedPublicaciones((prev) => [...prev, id]);
       toast.success("Agregado correctamente");
     }
+  };
+  const handleDeselectPublicacion = (id: string) => {
+    setSelectedPublicaciones((prev) => prev.filter((item) => item !== id));
+    toast.success("Deseleccionado");
   };
   const handleSelectFile = (item: string) => {
     setFormData((prev) => ({
@@ -173,13 +181,26 @@ export const NewServicio = () => {
     console.log(formData);
     setLoading(true);
     try {
-      const publicationsCollection = collection(db, "services");
+      const servicesCollection = collection(db, "services");
       const fullDoc = {
         ...formData,
         publicaciones_relacionadas: selectedPublicaciones,
         consultores_relacionados: selectedConsultores,
       };
-      await addDoc(publicationsCollection, fullDoc);
+      await addDoc(servicesCollection, fullDoc);
+      setFormData({
+        nombre_servicio: "",
+        descripcion_reducida: "",
+        descripcion_detallada: "",
+        imagen_principal: "",
+        imagen_secundaria_1: "",
+        imagen_secundaria_2: "",
+        industria_relacionada: [],
+        publicaciones_relacionadas: [],
+        consultores_relacionados: [],
+        archivo: "",
+        id: "",
+      })
       setLoading(false);
       setTimeout(() => {
         navigate("/dashboard/servicios"); // Navega hacia la ruta deseada
@@ -420,10 +441,14 @@ export const NewServicio = () => {
                     <FromDevzButton
                       borderHover="border-neutral-200"
                       text={item.nombre_completo}
-                      click={() => handleSelectRelatedConsultores(item.id)}
+                      click={() =>
+                        selectedConsultores.includes(item.id)
+                          ? handleDeselecRelatedConsultores(item.id)
+                          : handleSelectRelatedConsultores(item.id)
+                      }
                     >
                       {selectedConsultores.includes(item.id) && (
-                        <Check size={20} />
+                        <X size={20} />
                       )}
                     </FromDevzButton>
                   ))}
@@ -647,12 +672,21 @@ export const NewServicio = () => {
                       <Check className="text-neutral-800 absolute top-2 right-2" />
                     )}
                     <h3>{item.titulo_publicacion}</h3>
-                    <FromDevzButton
-                      text="Seleccionar publicación"
-                      click={() => handleSelectPublicacion(item.id)}
-                    >
-                      <BoxSelect />
-                    </FromDevzButton>
+                    {selectedPublicaciones.includes(item.id) ? (
+                      <FromDevzButton
+                        text="Deseleccionar publicación"
+                        click={() => handleDeselectPublicacion(item.id)}
+                      >
+                        <X />
+                      </FromDevzButton>
+                    ) : (
+                      <FromDevzButton
+                        text="Seleccionar publicación"
+                        click={() => handleSelectPublicacion(item.id)}
+                      >
+                        <BoxSelect />
+                      </FromDevzButton>
+                    )}
                   </div>
                 </div>
               ))}
