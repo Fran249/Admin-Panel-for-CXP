@@ -134,8 +134,8 @@ export const NewProyecto = () => {
   };
 
   const industrias = [
-    { value: "hidrocarburos", label: "Hidrocarburos" },
     { value: "mineria", label: "Minería" },
+    { value: "hidrocarburos", label: "Hidrocarburos" },
     { value: "renovables", label: "Renovables" },
   ];
 

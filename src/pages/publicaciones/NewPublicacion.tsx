@@ -22,10 +22,11 @@ import {
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../services/firebase";
 import { Toaster, toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Dialog, Tooltip } from "@mui/material";
 import { useStorage } from "../../hooks/useStorage";
 import { truncateText } from "../../utils/truncateText";
+import { getServicios } from "../../utils/getServicios";
 
 type FormData = {
   abstract: string;
@@ -65,6 +66,7 @@ export const NewPublicacion = () => {
   const [openDialogImagenes, setOpenDialogImagenes] = useState(false);
   const [openDialogArchivos, setOpenDialogArchivos] = useState(false);
   const [imageId, setImageId] = useState<null | number>(null);
+  const { servicesArray } = getServicios();
   const { imagesFromPublications, filesFromPublications } = useStorage({
     publicationsRoute: "/publications/images",
     filesFromPublicationsRoute: "/publications/files",
@@ -72,7 +74,7 @@ export const NewPublicacion = () => {
   const inputClasses =
     "w-full p-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 bg-neutral-200 text-neutral-800";
   const labelClasses = "block text-sm font-medium text-neutral-800 mb-1";
-
+  console.log(servicesArray);
   const handleMouseOver = (id: number) => {
     setImageId(id);
   };
@@ -144,16 +146,10 @@ export const NewPublicacion = () => {
     }
   };
 
-  const servicios = [
-    { value: "consultoria", label: "Consultoría" },
-    { value: "desarrollo", label: "Desarrollo" },
-    { value: "diseño", label: "Diseño" },
-  ];
-
   const industrias = [
-    { value: "tecnologia", label: "Tecnología" },
-    { value: "construccion", label: "Construcción" },
-    { value: "salud", label: "Salud" },
+    { value: "mineria", label: "Minería" },
+    { value: "hidrocarburos", label: "Hidrocarburos" },
+    { value: "renovables", label: "Renovables" },
   ];
   useEffect(() => {
     if (imagesFromPublications?.length > 0) {
@@ -360,59 +356,74 @@ export const NewPublicacion = () => {
                 </div> */}
             </div>
             {/*Servicios Relacionados*/}
-            <div>
-              <label htmlFor="servicios_relacionados" className={labelClasses}>
-                Servicios relacionados
-              </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Briefcase className="h-5 w-5 text-neutral-500" />
-                </div>
-                <div
-                  className={`${inputClasses} pl-10 cursor-pointer`}
-                  onClick={() => setIsServiciosOpen(!isServiciosOpen)}
+            {servicesArray.length > 0 ? (
+              <div>
+                <label
+                  htmlFor="servicios_relacionados"
+                  className={labelClasses}
                 >
-                  {formData.servicios_relacionados.length > 0
-                    ? formData.servicios_relacionados
-                        .map(
-                          (service) =>
-                            servicios.find((s) => s.value === service)?.label
-                        )
-                        .join(", ")
-                    : "Seleccione un servicio"}
-                </div>
-                {isServiciosOpen && (
-                  <div className="absolute z-10 mt-1 w-full bg-neutral-200 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                    {servicios.map((servicio) => (
-                      <div
-                        key={servicio.value}
-                        className="flex items-center px-4 py-2 hover:bg-gray-100"
-                      >
-                        <input
-                          type="checkbox"
-                          id={servicio.value}
-                          name="servicios_relacionados"
-                          value={servicio.value}
-                          checked={formData.servicios_relacionados.includes(
-                            servicio.value
-                          )}
-                          onChange={handleCheckboxChange(
-                            "servicios_relacionados"
-                          )}
-                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                        />
-                        <label
-                          htmlFor={servicio.value}
-                          className="ml-3 block text-sm text-gray-700"
-                        >
-                          {servicio.label}
-                        </label>
-                      </div>
-                    ))}
+                  Servicios relacionados
+                </label>
+                <div className="mt-1 relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Briefcase className="h-5 w-5 text-neutral-500" />
                   </div>
-                )}
+                  <div
+                    className={`${inputClasses} pl-10 cursor-pointer first-letter:uppercase`}
+                    onClick={() => setIsServiciosOpen(!isServiciosOpen)}
+                  >
+                    {formData.servicios_relacionados.length > 0
+                      ? formData.servicios_relacionados
+                          .map(
+                            (service) =>
+                              servicesArray.find((s) => s.value === service)
+                                ?.label
+                          )
+                          .join(", ")
+                      : "Seleccione un servicio"}
+                  </div>
+                  {isServiciosOpen && (
+                    <div className="absolute z-10 mt-1 w-full bg-neutral-200 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                      {servicesArray.map((servicio) => (
+                        <div
+                          key={servicio.value}
+                          className="flex items-center px-4 py-2 hover:bg-gray-100"
+                        >
+                          <input
+                            type="checkbox"
+                            id={servicio.value}
+                            name="servicios_relacionados"
+                            value={servicio.value}
+                            checked={formData.servicios_relacionados.includes(
+                              servicio.value
+                            )}
+                            onChange={handleCheckboxChange(
+                              "servicios_relacionados"
+                            )}
+                            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                          />
+                          <label
+                            htmlFor={servicio.value}
+                            className="ml-3 block text-sm text-gray-700 first-letter:uppercase"
+                          >
+                            {servicio.label}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="col-span-1 flex flex-col">
+                <h3 className="font-semibold">
+                  No existen servicios cargados...
+                </h3>
+                <Link to={'/dashboard/servicios/upload'}>
+                  <FromDevzButton text="Ir a cargar"></FromDevzButton>
+                </Link>
+              </div>
+            )}
             {/*Industria Asociada*/}
             <div>
               <label htmlFor="industria_asociada" className={labelClasses}>

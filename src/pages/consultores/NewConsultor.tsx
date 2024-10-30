@@ -194,9 +194,9 @@ export const NewConsultor = () => {
     { value: "Alemán", label: "Alemán" },
   ];
   const industrias = [
-    { value: "Hidrocarburos", label: "Hidrocarburos" },
-    { value: "Minería", label: "Minería" },
-    { value: "Renovables", label: "Renovables" },
+    { value: "mineria", label: "Minería" },
+    { value: "hidrocarburos", label: "Hidrocarburos" },
+    { value: "renovables", label: "Renovables" },
   ];
 
   const handleMouseOver = (id: number) => {
@@ -508,7 +508,7 @@ export const NewConsultor = () => {
             </div>
             {/*Industrias*/}
             <div>
-              <label htmlFor="servicios_relacionados" className={labelClasses}>
+              <label htmlFor="industria_asociada" className={labelClasses}>
                 Industrias
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
