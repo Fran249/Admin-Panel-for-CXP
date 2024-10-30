@@ -21,9 +21,9 @@ import {
   FromDevzButtonWithTooltip,
 } from "../../components/button/FromDevzButton";
 import React, { useEffect, useState } from "react";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
 import { doc, updateDoc } from "firebase/firestore";
-import { db, storage } from "../../services/firebase";
+import { db } from "../../services/firebase";
 import { truncateText } from "../../utils/truncateText";
 import { Dialog, Tooltip } from "@mui/material";
 import { useStorage } from "../../hooks/useStorage";
@@ -199,9 +199,6 @@ export const EditPublicacion = () => {
       console.error("Error al cargar datos:", error);
       setLoading(false);
     }
-
-   
-
   };
 
   return (

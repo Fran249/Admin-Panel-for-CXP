@@ -8,14 +8,13 @@ import {
   FileText,
   Image,
   Briefcase,
-  Upload,
   LoaderCircle,
   BoxSelect,
   X,
   Check,
   Save,
 } from "lucide-react";
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import {  doc, updateDoc } from "firebase/firestore";
 
 import { Toaster, toast } from "sonner";
 import { useLocation, useNavigate } from "react-router-dom";

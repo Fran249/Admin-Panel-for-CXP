@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { db, storage } from "../../services/firebase";
+import { db,} from "../../services/firebase";
 import { doc, updateDoc } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+
 import {
   BoxSelect,
   Check,
@@ -10,7 +10,7 @@ import {
   LoaderCircle,
   Save,
   Tag,
-  Trash,
+
   X,
 } from "lucide-react";
 import { useState } from "react";
