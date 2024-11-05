@@ -52,7 +52,7 @@ export const Login = () => {
     <section className="relative flex flex-col gap-10 justify-center items-center w-full min-h-screen bg-neutral-900 font-archivo">
       {user === null && loading === false && (
         <>
-          <h1 className="text-4xl text-white font-bold">ADMIN PANEL</h1>
+          <h1 className="text-4xl text-white font-bold">ADMIN PANELLLL</h1>
           <LoginForm
             username={username}
             password={password}
