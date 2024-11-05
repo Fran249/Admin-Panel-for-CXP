@@ -29,7 +29,7 @@
       },
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDMxMTM2QTVEQkZDREUwNkMKUldSczRNMi9YV29UTVdGNFhpZkdzdWZVYnZSZTFoQlU4cjk0dkcrV3hrNEMwWEpWanE0b0x2bjAK",
       "endpoints": [
-        "https://api.github.com/repos/Fran249/Admin-Panel-for-CXP/releases/latest/latest.json"
+        "https://github.com/Fran249/Admin-Panel-for-CXP/releases/latest/download/latest.json"
       ]
     }
   },
