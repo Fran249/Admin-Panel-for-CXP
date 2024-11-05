@@ -1,7 +1,7 @@
 // src/App.tsx
 
 // import React, { useEffect } from 'react';
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Publicaciones } from "./pages/publicaciones/Publicaciones";
 import { Proyectos } from "./pages/proyectos/Proyectos";
@@ -23,16 +23,63 @@ import { EditConsultores } from "./pages/consultores/EditConsultores";
 import { Servicios } from "./pages/servicios/Servicios";
 import { NewServicio } from "./pages/servicios/NewServicio";
 import { EditServicio } from "./pages/servicios/EditServicio";
-import { checkUpdates } from "./utils/checkUpdates";
+import { open } from "@tauri-apps/plugin-shell";
+import { UpdaterNotification } from "./components/updater-notification/UpdaterNotification";
+import { check } from "@tauri-apps/plugin-updater";
+import { invoke } from "@tauri-apps/api/core";
 
 const App: React.FC = () => {
-  
+  const [hasUpdate, setHasUpdate] = useState(false);
+  const [version, setVersion] = useState("");
+  const [confirm, setConfirm] = useState(false);
+
+  const handleConfirmUpdate = () => {
+    setConfirm(true);
+  };
+  const handleOpenLink = (url: string) => {
+    open(url);
+  };
+  const checkUpdates = async () => {
+    const update = await check();
+    if (update === null) {
+      // await message('Failed to check for updates.\nPlease try again later.', {
+      //   title: 'Error',
+      //   kind: 'error',
+      //   okLabel: 'OK'
+      // });
+      return;
+    } else if (update?.available) {
+      setVersion(update.version);
+      setHasUpdate(true);
+      // const yes = await ask(`Update to ${update.version} is available!\n\nRelease notes: ${update.body}`, {
+      //   title: 'Update Available',
+      //   kind: 'info',
+      //   okLabel: 'Update',
+      //   cancelLabel: 'Cancel'
+      // });
+      if (confirm) {
+        await update.downloadAndInstall();
+        // Restart the app after the update is installed by calling the Tauri command that handles restart for your app
+        // It is good practice to shut down any background processes gracefully before restarting
+        // As an alternative, you could ask the user to restart the app manually
+        await invoke("graceful_restart");
+      }
+    }
+  };
+
   useEffect(() => {
-    checkUpdates()
+    checkUpdates();
   }, []);
   return (
     <Router>
       <UserProvider>
+        {hasUpdate && (
+          <UpdaterNotification
+            version={version}
+            onClick={handleConfirmUpdate}
+            openLink={handleOpenLink}
+          />
+        )}
         <Routes>
           <Route path="/" element={<Login />} />
           <Route
