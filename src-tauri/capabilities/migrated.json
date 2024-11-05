@@ -9,6 +9,7 @@
     "core:default",
     "core:window:allow-set-fullscreen",
     "shell:allow-open",
-    "shell:default"
+    "shell:default",
+    "dialog:default"
   ]
 }

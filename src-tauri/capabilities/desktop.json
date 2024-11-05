@@ -1,6 +1,8 @@
 {
   "identifier": "desktop-capability",
-  "windows": ["main"],
+  "windows": [
+    "main"
+  ],
   "platforms": [
     "macOS",
     "windows",
@@ -13,6 +15,7 @@
     "dialog:allow-ask",
     "dialog:allow-message",
     "updater:allow-check",
-    "updater:allow-download-and-install"
+    "updater:allow-download-and-install",
+    "dialog:default"
   ]
 }
