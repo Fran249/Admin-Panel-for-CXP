@@ -1,5 +1,7 @@
-// src/App.jsx
+// src/App.tsx
 
+// import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Publicaciones } from "./pages/publicaciones/Publicaciones";
 import { Proyectos } from "./pages/proyectos/Proyectos";
@@ -21,16 +23,20 @@ import { EditConsultores } from "./pages/consultores/EditConsultores";
 import { Servicios } from "./pages/servicios/Servicios";
 import { NewServicio } from "./pages/servicios/NewServicio";
 import { EditServicio } from "./pages/servicios/EditServicio";
+import { checkUpdates } from "./utils/checkUpdates";
 
-
-function App() {
+const App: React.FC = () => {
+  
+  useEffect(() => {
+    checkUpdates()
+  }, []);
   return (
     <Router>
       <UserProvider>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route 
-            path="/dashboard" 
+          <Route
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <Dashboard />
@@ -39,7 +45,10 @@ function App() {
           >
             <Route path="publicaciones" element={<Publicaciones />} />
             <Route path="publicaciones/upload" element={<NewPublicacion />} />
-            <Route path="publicaciones/edit/:id" element={<EditPublicacion />} />
+            <Route
+              path="publicaciones/edit/:id"
+              element={<EditPublicacion />}
+            />
             <Route path="proyectos" element={<Proyectos />} />
             <Route path="proyectos/upload" element={<NewProyecto />} />
             <Route path="proyectos/edit/:id" element={<EditProyecto />} />
@@ -58,6 +67,6 @@ function App() {
       </UserProvider>
     </Router>
   );
-}
+};
 
 export default App;

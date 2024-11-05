@@ -501,7 +501,7 @@ export const EditPublicacion = () => {
               </button>
             </Tooltip>
           </nav>
-          <div className="w-full min-h-80 flex justify-center items-center gap-10 bg-neutral-200">
+          <div className="w-full min-h-80 flex flex-wrap py-16 justify-center items-center gap-10 bg-neutral-200">
             {imagesFromPublications &&
               imagesFromPublications.map((item, index) => (
                 <div

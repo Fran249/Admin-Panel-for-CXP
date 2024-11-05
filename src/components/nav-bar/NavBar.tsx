@@ -19,13 +19,14 @@ import {
   Users,
   Package,
 } from "lucide-react";
-import { appWindow } from "@tauri-apps/api/window";
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { signOut } from "firebase/auth";
 import { auth } from "../../services/firebase";
 import { Drawer, Tooltip } from "@mui/material";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+const appWindow = getCurrentWebviewWindow()
 
 const NavBar = () => {
   const navigate = useNavigate();

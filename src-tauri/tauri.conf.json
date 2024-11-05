@@ -1,30 +1,42 @@
 {
-  "$schema": "https://schema.tauri.app/config/1",
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "FromDevz Admin Panel",
+  "mainBinaryName": "FromDevz Admin Panel",
+  "version": "1.0.0",
+  "identifier": "com.admin-panel-v1.app",
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist"
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420"
   },
-  "package": {
-    "productName": "FromDevz Admin Panel V 1.0",
-    "version": "1.0.0"
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "createUpdaterArtifacts": true
   },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "window": {
-        "all": false,
-        "setFullscreen": true 
+  "plugins": {
+    "updater": {
+      "windows": {
+        "installMode": "basicUi"
       },
-      "shell": {
-        "all": false,
-        "open": true
-      }
-    },
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEM0NTYxOThDMUM1MTZFMkQKUldRdGJsRWNqQmxXeE51U1NLYXEwOFU5K3BSRXQwZjZIQ1BnR2drMHZPSkZpcEYxT0JYTE5CN0YK",
+      "endpoints": [
+        "https://api.github.com/repos/Fran249/Admin-Panel-for-CXP/releases/latest/latest.json"
+      ]
+    }
+  },
+  "app": {
     "windows": [
       {
-        "title": "FromDevz Admin Panel V 1.0",
+        "title": "FromDevz Admin Panel",
         "fullscreen": false,
         "resizable": true,
         "width": 1280,
@@ -34,19 +46,8 @@
       }
     ],
     "security": {
-      "csp": null
-    },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "com.admin-panel-v1.app",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ]
+      "csp": null,
+      "capabilities": []
     }
   }
 }
