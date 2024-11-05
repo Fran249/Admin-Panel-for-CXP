@@ -52,15 +52,23 @@ jobs:
         run: npm install # change this to npm, pnpm or bun depending on which one you use.
 
       - name: Set environment variables
+        env:
+          VITE_APIKEY: ${{ secrets.VITE_APIKEY }}
+          VITE_AUTHDOMAIN: ${{ secrets.VITE_AUTHDOMAIN }}
+          VITE_PROJECTID: ${{ secrets.VITE_PROJECTID }}
+          VITE_STORAGEBUCKET: ${{ secrets.VITE_STORAGEBUCKET }}
+          VITE_MESSAGINGSENDERID: ${{ secrets.VITE_MESSAGINGSENDERID }}
+          VITE_APPID: ${{ secrets.VITE_APPID }}
+          VITE_MEASUREMENTID: ${{ secrets.VITE_MEASUREMENTID }}
         run: |
-          echo VITE_APIKEY=${{ secrets.VITE_APIKEY }} >> $GITHUB_ENV
-          echo VITE_AUTHDOMAIN=${{ secrets.VITE_AUTHDOMAIN }} >> $GITHUB_ENV
-          echo VITE_PROJECTID=${{ secrets.VITE_PROJECTID }} >> $GITHUB_ENV
-          echo VITE_STORAGEBUCKET=${{ secrets.VITE_STORAGEBUCKET }} >> $GITHUB_ENV
-          echo VITE_MESSAGINGSENDERID=${{ secrets.VITE_MESSAGINGSENDERID }} >> $GITHUB_ENV
-          echo VITE_APPID=${{ secrets.VITE_APPID }} >> $GITHUB_ENV
-          echo VITE_MEASUREMENTID=${{ secrets.VITE_MEASUREMENTID }} >> $GITHUB_ENV
-                
+          echo "VITE_APIKEY=${VITE_APIKEY}" >> $GITHUB_ENV
+          echo "VITE_AUTHDOMAIN=${VITE_AUTHDOMAIN}" >> $GITHUB_ENV
+          echo "VITE_PROJECTID=${VITE_PROJECTID}" >> $GITHUB_ENV
+          echo "VITE_STORAGEBUCKET=${VITE_STORAGEBUCKET}" >> $GITHUB_ENV
+          echo "VITE_MESSAGINGSENDERID=${VITE_MESSAGINGSENDERID}" >> $GITHUB_ENV
+          echo "VITE_APPID=${VITE_APPID}" >> $GITHUB_ENV
+          echo "VITE_MEASUREMENTID=${VITE_MEASUREMENTID}" >> $GITHUB_ENV
+
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
