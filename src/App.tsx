@@ -35,8 +35,12 @@ const App: React.FC = () => {
   const [version, setVersion] = useState("");
   const [confirm, setConfirm] = useState(false);
 
-  const handleConfirmUpdate = () => {
-    setConfirm(true);
+  const handleConfirmUpdate = async () => {
+    const update = await check();
+    if(update?.available){
+      await update.downloadAndInstall();
+      await invoke("graceful_restart");
+    } 
   };
   const handleOpenLink = (url: string) => {
     open(url);
@@ -53,19 +57,6 @@ const App: React.FC = () => {
     } else if (update?.available) {
       setVersion(update.version);
       setHasUpdate(true);
-      // const yes = await ask(`Update to ${update.version} is available!\n\nRelease notes: ${update.body}`, {
-      //   title: 'Update Available',
-      //   kind: 'info',
-      //   okLabel: 'Update',
-      //   cancelLabel: 'Cancel'
-      // });
-      if (confirm) {
-        await update.downloadAndInstall();
-        // Restart the app after the update is installed by calling the Tauri command that handles restart for your app
-        // It is good practice to shut down any background processes gracefully before restarting
-        // As an alternative, you could ask the user to restart the app manually
-        await invoke("graceful_restart");
-      }
     }
   };
 
