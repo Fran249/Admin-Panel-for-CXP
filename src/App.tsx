@@ -27,6 +27,8 @@ import { open } from "@tauri-apps/plugin-shell";
 import { UpdaterNotification } from "./components/updater-notification/UpdaterNotification";
 import { check } from "@tauri-apps/plugin-updater";
 import { invoke } from "@tauri-apps/api/core";
+import { ViewPicker } from "./pages/view-picker/ViewPicker";
+import { ImageConverter } from "./pages/image-converter/ImageConverter";
 
 const App: React.FC = () => {
   const [hasUpdate, setHasUpdate] = useState(false);
@@ -82,6 +84,19 @@ const App: React.FC = () => {
         )}
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route
+            path="/view-picker"
+            element={
+              <ProtectedRoute>
+                <ViewPicker />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/image-converter" element={
+              <ProtectedRoute>
+                <ImageConverter />
+              </ProtectedRoute>
+            }/>
           <Route
             path="/dashboard"
             element={

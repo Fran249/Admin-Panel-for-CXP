@@ -24,7 +24,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         // Solo redirigir si no hemos redirigido antes
         if (!hasRedirected) {
           console.log('Usuario autenticado:', userCredential);
-          navigate('/dashboard/publicaciones');
+          navigate('/view-picker');
           setHasRedirected(true); // Marcar como redirigido
         }
       } else {
