@@ -33,7 +33,7 @@ import { ImageConverter } from "./pages/image-converter/ImageConverter";
 const App: React.FC = () => {
   const [hasUpdate, setHasUpdate] = useState(false);
   const [version, setVersion] = useState("");
-  const [confirm, setConfirm] = useState(false);
+
 
   const handleConfirmUpdate = async () => {
     const update = await check();
