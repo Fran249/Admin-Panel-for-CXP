@@ -165,7 +165,7 @@ export const NewPublicacion = () => {
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full px-10"
+        className="w-[95%] px-20"
       >
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-6">

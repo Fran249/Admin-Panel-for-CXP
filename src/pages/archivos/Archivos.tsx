@@ -50,7 +50,7 @@ export const Archivos = () => {
             </FromDevzButton>
           </Link>
 
-          <div className="w-[calc(100%-240px)] h-full p-5">
+          <div className="w-[90%] h-full p-5">
             <Table
               tableTitle="Archivo"
               files={filesFromPublications}

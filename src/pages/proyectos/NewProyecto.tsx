@@ -140,12 +140,12 @@ export const NewProyecto = () => {
   ];
 
   return (
-    <section className="w-full min-h-screen py-20 bg-neutral-100 flex flex-col justify-center items-center">
+    <section className="w-full min-h-screen py-10 px-10 bg-neutral-100 flex flex-col justify-center items-center">
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full px-5"
+        className="w-[90%] pl-10"
       >
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-6">

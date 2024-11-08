@@ -36,7 +36,7 @@ export const Proyectos = () => {
   return (
     <section className="bg-neutral-100 w-full h-screen py-40 flex flex-col justify-center items-center text-black">
       {loading ? (
-        <LoaderCircle className="text-neutral-800 animate-spin" />
+        <LoaderCircle className="text-neutral-800 animate-spin  absolute top-1/2 left-1/2" />
       ) : (
         <>
           <Link to={"upload"}>

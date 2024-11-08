@@ -9,7 +9,9 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../services/firebase";
 
 export const Publicaciones = () => {
-  const { publicaciones, loading, setLoading, refreshPublications } = useDb({ dbRoute: "publications" });
+  const { publicaciones, loading, setLoading, refreshPublications } = useDb({
+    dbRoute: "publications",
+  });
 
   const handleButtonClick = async (pub: any) => {
     setLoading(true);
@@ -30,20 +32,23 @@ export const Publicaciones = () => {
   }, []);
 
   return (
-    <section className="w-full min-h-screen py-40 flex flex-col justify-center items-center text-black bg-neutral-100">
+    <section className="w-full min-h-screen py-40 flex flex-col justify-center items-end text-black bg-neutral-100">
       {loading ? (
-        <LoaderCircle className="text-neutral-900 animate-spin" />
+      
+          <LoaderCircle className="text-neutral-900 animate-spin absolute top-1/2 left-1/2" />
+        
       ) : (
         <>
-          <Link to={"upload"}>
-            <FromDevzButton text="Nueva publicacion">
-              <Plus size={20} />
-            </FromDevzButton>
-          </Link>
-
-          <div className="w-full h-full p-5">
+          <div className="w-[95%] flex justify-center items-center">
+            <Link to={"upload"}>
+              <FromDevzButton text="Nueva publicacion">
+                <Plus size={20} />
+              </FromDevzButton>
+            </Link>
+          </div>
+          <div className="w-[95%] h-full p-5">
             <Table
-            tableTitle="Publicación"
+              tableTitle="Publicación"
               items={publicaciones}
               handleButtonClick={handleButtonClick}
               imageFormatter={false}

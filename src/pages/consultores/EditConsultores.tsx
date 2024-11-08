@@ -242,7 +242,7 @@ export const EditConsultores = () => {
     }
   }, [findedDocConsultores]);
   return (
-    <section className="w-full min-h-screen py-20 bg-neutral-100 flex flex-col justify-center items-center">
+    <section className="w-full min-h-screen bg-neutral-100 flex flex-col justify-center items-center">
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}

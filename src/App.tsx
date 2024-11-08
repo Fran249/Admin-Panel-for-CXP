@@ -30,17 +30,17 @@ import { invoke } from "@tauri-apps/api/core";
 import { ViewPicker } from "./pages/view-picker/ViewPicker";
 import { ImageConverter } from "./pages/image-converter/ImageConverter";
 
+
 const App: React.FC = () => {
   const [hasUpdate, setHasUpdate] = useState(false);
   const [version, setVersion] = useState("");
 
-
   const handleConfirmUpdate = async () => {
     const update = await check();
-    if(update?.available){
+    if (update?.available) {
       await update.downloadAndInstall();
       await invoke("graceful_restart");
-    } 
+    }
   };
   const handleOpenLink = (url: string) => {
     open(url);
@@ -61,6 +61,7 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
+
     checkUpdates();
   }, []);
   return (
@@ -83,11 +84,14 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-          <Route path="/image-converter" element={
+          <Route
+            path="/image-converter"
+            element={
               <ProtectedRoute>
                 <ImageConverter />
               </ProtectedRoute>
-            }/>
+            }
+          />
           <Route
             path="/dashboard"
             element={

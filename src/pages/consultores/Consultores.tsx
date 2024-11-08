@@ -19,7 +19,7 @@ export const Consultores = () => {
     try {
       await deleteDoc(docRef);
       toast.success("Documento borrado con éxito!");
-      await refreshPublications(); 
+      await refreshPublications();
     } catch (error) {
       console.error("Error al eliminar el documento:", error);
       toast.error("Error al borrar el documento.");
@@ -32,18 +32,20 @@ export const Consultores = () => {
     console.log(" estas en la ruta de Consultores");
   }, []);
   return (
-    <section className=" w-full h-screen flex flex-col justify-center items-center py-40 text-black bg-neutral-100">
+    <section className=" w-full min-h-screen gap-5 flex justify-center items-center flex-col text-black bg-neutral-100">
       {loading ? (
         <LoaderCircle className="text-neutral-800 animate-spin" />
       ) : (
         <>
-          <Link to={"upload"}>
-            <FromDevzButton text="Nuevo Consultor">
-              <Plus size={20} />
-            </FromDevzButton>
-          </Link>
+          <div className="w-[95%] flex justify-center items-center">
+            <Link to={"upload"}>
+              <FromDevzButton text="Nuevo Consultor">
+                <Plus size={20} />
+              </FromDevzButton>
+            </Link>
+          </div>
 
-          <div className="w-[calc(100%-240px)] h-full p-5">
+          <div className="w-[90%] h-full pl-12">
             <Table
               tableTitle="Consultor"
               items={consultores}

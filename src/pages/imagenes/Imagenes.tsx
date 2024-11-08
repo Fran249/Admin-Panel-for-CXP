@@ -35,7 +35,7 @@ export const Imagenes = () => {
   return (
     <section className="bg-neutral-100 w-full min-h-screen py-20 flex flex-col justify-center items-center text-black">
       {loading ? (
-        <LoaderCircle className="text-neutral-800 animate-spin" />
+        <LoaderCircle className="text-neutral-800 animate-spin  absolute top-1/2 left-1/2" />
       ) : (
         <>
           <Link to={"upload"}>
