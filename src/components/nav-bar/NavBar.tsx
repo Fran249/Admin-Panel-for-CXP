@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion} from "framer-motion";
 import {
   FileText,
   Briefcase,
@@ -13,7 +13,7 @@ import {
   ImagePlus,
   FilePlus,
   ArrowLeft,
-  Settings,
+
   Fullscreen,
   UserPlus,
   Package,
